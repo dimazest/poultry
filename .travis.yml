@@ -7,5 +7,5 @@ script: python setup.py test
 
 after_success:
   - pip install -r requirements-testing.txt -e .
-  - py.test --cov=google_ngram_downloader --cov-report=term-missing test
+  - py.test --cov=poultry --cov-report=term-missing test
   - coveralls
