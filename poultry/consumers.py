@@ -6,7 +6,7 @@ import sys
 import time
 
 from collections import OrderedDict, Counter
-from contextlib import closing, contextmanager
+from contextlib import contextmanager
 from itertools import chain
 from pprint import pprint as _pprint
 
@@ -17,12 +17,11 @@ logger = logging.getLogger(__name__)
 
 
 def consumer(func):
-    '''
-    A decorator function that takes care of starting a coroutine
-    automatically on call.
+    """A decorator function that takes care of starting a coroutine automatically on call.
 
     See http://www.dabeaz.com/generators/ for more details.
-    '''
+
+    """
     def start(*args, **kwargs):
         cr = func(*args, **kwargs)
         next(cr)
@@ -39,18 +38,14 @@ def nop(*args, **kwargs):
 
 @consumer
 def show(template=u'{}\n'):
-    '''
-    Print tweet text and meta information.
-    '''
+    """Print tweet text and meta information."""
     while True:
         print(template.format(unicode((yield))))
 
 
 @consumer
 def select(output=sys.stdout):
-    '''
-    Print tweets as it is returned by the Twitter streaming API.
-    '''
+    """Print tweets as it is returned by the Twitter streaming API."""
     while True:
         tweet = yield
         output.write(u'{}\n'.format(tweet.raw.strip()))
@@ -58,19 +53,15 @@ def select(output=sys.stdout):
 
 @consumer
 def print_(output=sys.stdout, template=u'{}\n'):
-    '''
-    Print stripped items.
-    '''
+    """Print stripped items."""
     while True:
         item = yield
-        output.write(template.format(str(item).strip('\n')))
+        output.write(template.format((item).strip('\n')))
 
 
 @consumer
 def pprint():
-    '''
-    Pretty print tweet's json object.
-    '''
+    """Pretty print tweet's json object."""
     while True:
         tweet = (yield)
         _pprint(tweet.parsed)
@@ -87,9 +78,7 @@ def counter_printer(output=sys.stdout):
 
 @consumer
 def to_tweet(target):
-    '''
-    Convert the input items to tweets.
-    '''
+    """Convert the input items to tweets."""
     result = None
 
     with closing(target):
@@ -108,9 +97,7 @@ def to_tweet(target):
 def group(file_name_template='%Y-%m-%d-%H.gz',
           max_open_files=1,
           ):
-    '''
-    Group tweets to files by date according to the file_name_template.
-    '''
+    """Group tweets to files by date according to the file_name_template."""
     files = OrderedDict()
 
     try:
@@ -142,8 +129,7 @@ def group(file_name_template='%Y-%m-%d-%H.gz',
 
 @consumer
 def filter(streams, dustbin=None, send_to_all=True):
-    '''
-    Filter items to flows by filtering predicates.
+    """Filter items to flows by filtering predicates.
 
     :param streams: sequence of `(target, predicate)` pairs.
 
@@ -152,7 +138,8 @@ def filter(streams, dustbin=None, send_to_all=True):
                         to only one.
 
     `predicate` is a function: current, first --> Bool
-    '''
+
+    """
     def update_all_targets():
         all_targets = [t for t, _ in streams]
         if dustbin is not None:
@@ -183,9 +170,7 @@ def filter(streams, dustbin=None, send_to_all=True):
 
 @consumer
 def uniq(target, seen_ids=None):
-    '''
-    Omit repeated tweets.
-    '''
+    """Omit repeated tweets."""
     seen_ids = set(seen_ids) if seen_ids is not None else set()
 
     with closing(target):
@@ -200,9 +185,7 @@ def uniq(target, seen_ids=None):
 
 @consumer
 def split(*targets):
-    '''
-    Send the input items to each target.
-    '''
+    """Send the input items to each target."""
     with closing(*targets):
         while True:
             item = yield
@@ -213,9 +196,7 @@ def split(*targets):
 
 @consumer
 def to_simple_queue(queue):
-    '''
-    Put items to a simple queue.
-    '''
+    """Put items to a simple queue."""
     while True:
         item = yield
         queue.put(item)
@@ -223,8 +204,7 @@ def to_simple_queue(queue):
 
 @consumer
 def count(*counters, **kwargs):
-    '''
-    Universal element counter.
+    """Universal element counter.
 
     :param counters: counters to update.
 
@@ -234,7 +214,7 @@ def count(*counters, **kwargs):
     :param provider: a function which provides elements that have to
                      be counted given an input item.
 
-    '''
+    """
     provider = kwargs.get('provider', None)
     target = kwargs.get('target', None)
     targets = [target] if target else []
@@ -254,9 +234,7 @@ def count(*counters, **kwargs):
 
 
 def count_tokens(*counters, **kwargs):
-    '''
-    Count tokens in a tweet.
-    '''
+    """Count tokens in a tweet."""
     if kwargs.pop('distinguish_hashtags', True):
         kwargs['provider'] = lambda tweet: chain(tweet.tokens,
                                                  (u'#{}'.format(h) for h in tweet.hashtags),
@@ -268,9 +246,7 @@ def count_tokens(*counters, **kwargs):
 
 
 def timeline(*counters, **kwargs):
-    '''
-    Count tweet's creation time.
-    '''
+    """Count tweet's creation time."""
     window = kwargs.pop('window', '%Y-%m-%d-%H')
     kwargs['provider'] = lambda tweet: [tweet.created_at.strftime(window)]
 
@@ -279,14 +255,14 @@ def timeline(*counters, **kwargs):
 
 @consumer
 def batch(target, flow_name=None, splitter=None):
-    '''
-    Batch a stream of tweets to chunks defined by `splitter`.
+    """Batch a stream of tweets to chunks defined by `splitter`.
 
     :param target: a coroutine tweets are sent to.
     :param flow_name: an optional flow name, which is used mainly for logging.
     :param splitter: a function which decides whether a new batch has started.
     :type splitter: (datetime, Tweet) --> bool
-    '''
+
+    """
     batch_size = 0
 
     if splitter is None:
@@ -315,9 +291,7 @@ def batch(target, flow_name=None, splitter=None):
 
 @contextmanager
 def lazy_counter(*counters, **kwargs):
-    '''
-    Delay the update of the counter.
-    '''
+    """Delay the update of the counter."""
     target = kwargs.get('target')
 
     local_counter = Counter()
@@ -370,9 +344,7 @@ def mutate(target, mutator=None):
 
 @contextmanager
 def closing(*targets, **kwargs):
-    '''
-    Throw exceptions to targets and close targets on exit.
-    '''
+    """Throw exceptions to targets and close targets on exit."""
     mutable_targets = kwargs.get('mutable_targets', [])
     try:
         yield
@@ -391,15 +363,14 @@ def dont_close(target):
 
 
 class PropogatedException(Exception):
-    '''
-    '''
+    """"""
 
 
 class BatchEndException(PropogatedException):
-    '''
+    """
     Is thrown by batch() to the target generator on the end of the
     current batch.
-    '''
+    """
 
     def __init__(self, last_item, batch_size):
         self.last_item = last_item
@@ -407,7 +378,7 @@ class BatchEndException(PropogatedException):
 
 
 class SendNext(object):
-    '''
+    """
     Returned a consumer if the sent value is ignored, and the next value
     should be sent immediately.
-    '''
+    """

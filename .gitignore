@@ -18,7 +18,8 @@ develop-eggs
 lib
 lib64
 __pycache__
-.cache/*
+.cache
+.env
 
 # Installer logs
 pip-log.txt

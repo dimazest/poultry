@@ -5,7 +5,6 @@ from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 
-version = '0.1'
 dirname = os.path.dirname(__file__)
 long_description = (
     open(os.path.join(dirname, 'README.rst')).read() + '\n' +
@@ -28,7 +27,7 @@ class Tox(TestCommand):
 
 setup(
     name='poultry',
-    version='1',
+    version='1.0',
     description='A tweet collection manager.',
     long_description=long_description,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -54,6 +53,8 @@ setup(
     install_requires=[
         'opster',
         'setuptools',
+        'requests',
+        'requests-oauthlib',
     ],
     entry_points={
         'console_scripts': [

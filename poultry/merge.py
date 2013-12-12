@@ -121,9 +121,7 @@ def _merger(tagged_targets, provider=None):
 
 @consumer
 def _tagger(target, tag):
-    '''
-    Send to the target pairs (tag, item).
-    '''
+    """Send to the target pairs (tag, item)."""
     # Target is not being closed!
     result = None
 

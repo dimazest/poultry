@@ -26,9 +26,7 @@ class Tweet(object):
 
     @property
     def text(self):
-        '''
-        The unprocessed text of the tweet.
-        '''
+        """The unprocessed text of the tweet."""
         return self.parsed['text']
 
     @property
@@ -61,9 +59,10 @@ class Tweet(object):
 
     @property
     def screen_name(self):
-        '''
-        '''
-        return '{}'.format(self.parsed['user']['screen_name'])
+        try:
+            return self.parsed['user']['screen_name']
+        except KeyError:
+            logger.warning("An error accessing ['user']['screen_name']")
 
     @property
     def user_id(self):
@@ -97,7 +96,12 @@ class Tweet(object):
 
     @property
     def orig_created_at(self):
-        return self._created_at_to_datetime(self.parsed['created_at'])
+        try:
+            created_at = self.parsed['created_at']
+        except KeyError:
+            logger.warning("An error accessing ['created_at']")
+        else:
+            return self._created_at_to_datetime(created_at)
 
     @staticmethod
     def _created_at_to_datetime(created_at):
@@ -123,15 +127,18 @@ class Tweet(object):
 
     @property
     def coordinates(self):
-        '''
-        The location of the tweet.
+        """The location of the tweet.
 
         `None` is returned in case there is no geo information.
-        '''
-        coor = self.parsed['coordinates']
 
-        if coor and coor['type'] == 'Point':
-            return Coordinates(*coor['coordinates'])
+        """
+        try:
+            coor = self.parsed['coordinates']
+        except KeyError:
+            pass
+        else:
+            if coor and coor['type'] == 'Point':
+                return Coordinates(*coor['coordinates'])
 
     @property
     def twitter_url(self):
