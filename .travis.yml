@@ -2,7 +2,6 @@ language: python
 
 install:
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
-  - pip install python-coveralls
 
 script: python setup.py test
 
