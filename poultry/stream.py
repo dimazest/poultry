@@ -1,13 +1,14 @@
-from time import sleep
 import urllib
+import logging
+from time import sleep
 from itertools import chain
 from multiprocessing import Process
-import logging
+from multiprocessing.queues import SimpleQueue
 
 import requests
 from requests_oauthlib import OAuth1Session
 
-from poultry import producers
+from poultry import consumers
 
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,7 @@ class StreamProducer(Process):
 
     def __init__(self, target, twitter_credentials,
                  follow=None, track=None, locations=None,
+                 url='https://stream.twitter.com/1.1/statuses/filter.json',
                  *args, **kwargs):
         super(StreamProducer, self).__init__(*args, **kwargs)
 
@@ -41,6 +43,7 @@ class StreamProducer(Process):
         self.track = track if track is not None else []
         self.follow = follow if follow is not None else []
         self.locations = locations if locations is not None else []
+        self.url = url
 
         self.client = OAuth1Session(
             twitter_credentials['consumer_key'],
@@ -51,9 +54,6 @@ class StreamProducer(Process):
 
     def _run(self):
         target = self.target
-
-        assert any([self.track, self.follow, self.locations])
-        url = 'https://stream.twitter.com/1.1/statuses/filter.json'
 
         def quote(items):
             # XXX It's not clear for me how the parameters have to be
@@ -68,14 +68,12 @@ class StreamProducer(Process):
         locations = ','.join(str(f) for f in chain.from_iterable(chain.from_iterable(self.locations)))
         if locations:
             data['locations'] = locations
-        response = self.client.post(url, data=data, stream=True)
+        response = self.client.post(self.url, data=data, stream=True)
 
         response.raise_for_status()
 
         line = None
-        print line
         for line in response.iter_lines():
-            print line
             target.send(line)
         else:
             # XXX Should be changed to something meaningful
@@ -99,9 +97,7 @@ class StreamProducer(Process):
 
 
 class StreamConsumer(Process):
-    '''
-    A consumer of a stream of tweets.
-    '''
+    """A consumer of a stream of tweets."""
     def __init__(self, queue, target, *args, **kwargs):
         super(StreamConsumer, self).__init__(*args, **kwargs)
 
@@ -110,13 +106,66 @@ class StreamConsumer(Process):
 
     def run(self):
         try:
-            producers.from_simple_queue(self.target, self.queue)
+            from_simple_queue(self.target, self.queue)
         except KeyboardInterrupt:
             pass
 
 
+def from_simple_queue(target, queue):
+    with consumers.closing(target):
+        while True:
+            item = queue.get()
+
+            if item is StopIteration:
+                break
+
+            target.send(item)
+
+
+def from_twitter_api(target, endpoint, config):
+    """Consume tweets from a Streaming API endpoint."""
+    endpoint_to_url = {
+        'twitter://sample': 'https://stream.twitter.com/1.1/statuses/sample.json',
+        'twitter://filter': 'https://stream.twitter.com/1.1/statuses/filter.json',
+    }
+
+    if endpoint == 'twitter://filter':
+        filter_predicates = config.global_filter.predicates
+        kwargs = {
+            'follow': filter_predicates['follow'],
+            'track': filter_predicates['track'],
+            'locations': filter_predicates['locations'],
+        }
+    else:
+        kwargs = {}
+
+    # The communication point of the consumer and producer processes.
+    queue = SimpleQueue()
+
+    # Start the consumer first
+    consumer = StreamConsumer(queue, target)
+    consumer.start()
+
+    # then the producer.
+    producer = StreamProducer(
+        twitter_credentials=dict(config.items('twitter')),
+        target=consumers.to_simple_queue(queue),
+        url=endpoint_to_url[endpoint],
+        **kwargs
+    )
+
+    producer.start()
+
+    try:
+        producer.join()
+    finally:
+        queue.put(StopIteration)
+        consumer.join()
+
+
 class EndOfStreamError(IOError):
-    '''
-    Twitter streams are supposed to be infinite. The exception should
-    be thrown, if for any reason the stream has ended.
-    '''
+    """Twitter streams are supposed to be infinite.
+
+    The exception should be thrown, if for any reason the stream has ended.
+
+    """

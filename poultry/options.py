@@ -1,10 +1,12 @@
-import logging
+import codecs
 import inspect
+import logging
+import sys
 
 import opster
 
 from poultry.config import Config
-
+from poultry.producers import from_stream
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +18,7 @@ class Dispatcher(opster.Dispatcher):
             (
                 ('v', 'verbose', False, 'Be verbose.'),
                 ('c', 'config', Config.default_config_file, 'Configuration file'),
+                ('s', 'source', '', 'The tweet source.'),
             )
         )
 
@@ -27,6 +30,8 @@ class Dispatcher(opster.Dispatcher):
 
 def _middleware(func):
     def wrapper(*args, **kwargs):
+        # sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+
         if func.__name__ == 'help_inner':
             return func(*args, **kwargs)
 
@@ -34,7 +39,16 @@ def _middleware(func):
 
         verbose = kwargs.pop('verbose')
 
-        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+        config = kwargs['config'] = Config(kwargs.get('config'))
+        if 'config' not in f_args:
+            kwargs.pop('config')
+
+        source = kwargs.pop('source')
+        producer = lambda target: from_stream(target, source, config)
+
+        if 'producer' in f_args:
+            kwargs['producer'] = producer
+
         logger = logging.getLogger('poultry')
 
         if verbose:
@@ -44,17 +58,15 @@ def _middleware(func):
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.DEBUG)
-
-        kwargs['config'] = Config(kwargs.get('config'))
-        if 'config' not in f_args:
-            kwargs.pop('config')
+        else:
+            logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.CRITICAL)
 
         try:
             return func(*args, **kwargs)
         except KeyboardInterrupt:
             pass
-        except Exception as e:
+        except Exception:
             logger.error('Middleware captured an exception', exc_info=True)
-            raise e
+            raise
 
     return wrapper

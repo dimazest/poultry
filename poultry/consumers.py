@@ -44,16 +44,10 @@ def show(template=u'{}\n'):
 
 
 @consumer
-def select(output=sys.stdout):
-    """Print tweets as it is returned by the Twitter streaming API."""
-    while True:
-        tweet = yield
-        output.write(u'{}\n'.format(tweet.raw.strip()))
-
-
-@consumer
-def print_(output=sys.stdout, template=u'{}\n'):
+def print_(output=None, template=u'{}\n'):
     """Print stripped items."""
+    if output is None:
+        output = sys.stdout
     while True:
         item = yield
         output.write(template.format((item).strip('\n')))
@@ -351,15 +345,6 @@ def closing(*targets, **kwargs):
     finally:
         for target in chain(targets, mutable_targets):
             target.close()
-
-
-@consumer
-def dont_close(target):
-    item = None
-
-    while True:
-        item = yield item
-        item = target.send(item)
 
 
 class PropogatedException(Exception):

@@ -20,6 +20,7 @@ lib64
 __pycache__
 .cache
 .env
+htmlcov
 
 # Installer logs
 pip-log.txt

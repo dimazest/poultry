@@ -1,2 +1,2 @@
-pytest-pep8
-pytest-cov
+pytest-pep8==1.6
+pytest-cov==1.0.5
