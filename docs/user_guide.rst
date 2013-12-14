@@ -4,9 +4,7 @@ User guide
 Installation
 ------------
 
-You can virtualenv and pip to install ``poultry``:
-
-.. code-block:: bash
+You can use virtualenv and pip to install ``poultry``::
 
     $ virtualenv -ppython2.7 .env
     $ .env/bin/pip install poultry
@@ -55,7 +53,7 @@ Showing the collection to humans
 ``poultry show`` is a command which represents the tweets in the human
 readable form::
 
-    $ zcat ./tweets/2012-04-19-00.gz | head -n 2 | poultry show
+    $ zcat ./tweets/2012-04-19-00.gz | head -n 2 | .env/bin/poultry show
     MEL0L407: 100 days until summer Olympics
     https://twitter.com/#!/MEL0L407/status/192764446173708291
     2012-04-19 00:00:00
@@ -75,7 +73,7 @@ readable form::
 Another way to get the tweets from the ``./twwets`` is to specify it via the
 ``-s`` option::
 
-    $ poultry show -s ./tweets
+    $ .env/bin/poultry show -s ./tweets
     MEL0L407: 100 days until summer Olympics
     https://twitter.com/#!/MEL0L407/status/192764446173708291
     2012-04-19 00:00:00
@@ -95,7 +93,7 @@ the standard input or from the input directory to chunks which are written to fi
 
 ::
 
-    $ poultry group -t 'by_day/%Y-%m-%d.gz' -s ./tweets
+    $ .env/bin/poultry group -t 'by_day/%Y-%m-%d.gz' -s ./tweets
     by_day/2012-04-19.gz
     by_day/2012-04-20.gz
     by_day/2012-04-21.gz
@@ -167,7 +165,7 @@ To filter the collection run:
 
 ::
 
-    $ bin/poultry filter -c ./poultry.cfg  -s ./tweets
+    $ .env/bin/poultry filter -c ./poultry.cfg  -s ./tweets
 
 Twitter Streaming API stream capturing
 ======================================
@@ -204,9 +202,7 @@ POST statuses/filter
 ~~~~~~~~~~~~~~~~~~~~
 
 Returns public statuses that match one or more filter predicates. The filtering
-predicates are defined in the configuration file.
-
-::
+predicates are defined in the configuration file::
 
     .env/bin/poultry -s twitter://filter show
     GermaineBling: SJ's manager is like the 16th member of SJ 😃✨
