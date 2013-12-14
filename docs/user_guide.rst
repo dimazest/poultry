@@ -11,23 +11,21 @@ You can virtualenv and pip to install ``poultry``:
     $ virtualenv -ppython2.7 .env
     $ .env/bin/pip install poultry
 
-.. warning::
+If you get strange behavior, run `poulry` in the verbose mode by adding the
+``-v`` flag to see possible problems.
 
-    If you get strange behavior, run `poulry` in the verbose mode by
-    adding the ``-v`` flag to see possible problems.
+::
 
-    ::
-
-        $ .env/bin/poultry -s twitter://sample group -c poultry.cfg -v
-        2013-12-14 12:40:54,922: poultry.stream - WARNING - An http error occurred. Reconnecting...
-        Traceback (most recent call last):
-          File "/Users/dimazest/Documents/qmul/tools/src/poultry/poultry/stream.py", line 86, in run
-            self._run()
-          File "/Users/dimazest/Documents/qmul/tools/src/poultry/poultry/stream.py", line 73, in _run
-            response.raise_for_status()
-          File "/Users/dimazest/Documents/qmul/tools/src/poultry/.env/lib/python2.7/site-packages/requests/models.py", line 765, in raise_for_status
-            raise HTTPError(http_error_msg, response=self)
-        HTTPError: 401 Client Error: Unauthorized
+    $ .env/bin/poultry -s twitter://sample group -c poultry.cfg -v
+    2013-12-14 12:40:54,922: poultry.stream - WARNING - An http error occurred. Reconnecting...
+    Traceback (most recent call last):
+      File "/Users/dimazest/Documents/qmul/tools/src/poultry/poultry/stream.py", line 86, in run
+        self._run()
+      File "/Users/dimazest/Documents/qmul/tools/src/poultry/poultry/stream.py", line 73, in _run
+        response.raise_for_status()
+      File "/Users/dimazest/Documents/qmul/tools/src/poultry/.env/lib/python2.7/site-packages/requests/models.py", line 765, in raise_for_status
+        raise HTTPError(http_error_msg, response=self)
+    HTTPError: 401 Client Error: Unauthorized
 
 Local tweet collection management
 ---------------------------------
