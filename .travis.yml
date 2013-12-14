@@ -2,6 +2,7 @@ language: python
 
 install:
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
+  - pip install -U requests
 
 script: python setup.py test
 
