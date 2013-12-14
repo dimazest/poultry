@@ -1,4 +1,4 @@
-poultry
+Poultry
 =======
 
 .. image:: https://travis-ci.org/dimazest/poultry.png?branch=master
@@ -12,5 +12,5 @@ poultry
    :target: https://requires.io/github/dimazest/poultry/requirements/?branch=master
    :alt: Requirements Status
 
-.. If you are reading this file in a text ditor, refer to docs/user_guide.rst
-.. the user guide.
+:documentation: http://poultry.readthedocs.org
+:homepage: https://github.com/dimazest/poultry
