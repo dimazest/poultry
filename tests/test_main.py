@@ -37,8 +37,11 @@ def mock_StreamProducer(monkeypatch):
     monkeypatch.setattr(StreamProducer, 'run', mocked)
 
 
-def test_show(capfd):
-    dispatcher.dispatch(args='show -s twitter://sample -v'.split(), scriptname='poultry')
+def test_show(capfd, poultry_cfg):
+    dispatcher.dispatch(
+        args='show -s twitter://sample -v -c {}'.format(poultry_cfg).split(),
+        scriptname='poultry',
+    )
 
     out, err = capfd.readouterr()
     assert not err
@@ -58,8 +61,11 @@ def test_show(capfd):
     )
 
 
-def test_select(capfd, tweets):
-    dispatcher.dispatch(args='select -s twitter://sample -v'.split(), scriptname='poultry')
+def test_select(capfd, tweets, poultry_cfg):
+    dispatcher.dispatch(
+        args='select -s twitter://sample -v -c {}'.format(poultry_cfg).split(),
+        scriptname='poultry',
+    )
 
     out, err = capfd.readouterr()
     assert not err
@@ -68,8 +74,11 @@ def test_select(capfd, tweets):
     assert out == expected_result
 
 
-def test_pprint(capfd, tweets):
-    dispatcher.dispatch(args='pprint -s twitter://sample -v'.split(), scriptname='poultry')
+def test_pprint(capfd, tweets, poultry_cfg):
+    dispatcher.dispatch(
+        args='pprint -s twitter://sample -v -c {}'.format(poultry_cfg).split(),
+        scriptname='poultry',
+    )
 
     out, err = capfd.readouterr()
     assert not err
@@ -78,8 +87,11 @@ def test_pprint(capfd, tweets):
     assert out == expected_result
 
 
-def test_timeline(capfd, tweets):
-    dispatcher.dispatch(args='timeline -s twitter://sample -v'.split(), scriptname='poultry')
+def test_timeline(capfd, tweets, poultry_cfg):
+    dispatcher.dispatch(
+        args='timeline -s twitter://sample -v -c {}'.format(poultry_cfg).split(),
+        scriptname='poultry',
+    )
 
     out, err = capfd.readouterr()
     assert not err
