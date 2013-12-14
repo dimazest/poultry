@@ -6,10 +6,10 @@ from setuptools.command.test import test as TestCommand
 
 
 dirname = os.path.dirname(__file__)
-long_description = (
-    open(os.path.join(dirname, 'README.rst')).read() + '\n' +
-    open(os.path.join(dirname, 'CHANGES.rst')).read()
-)
+
+
+with open(os.path.join(dirname, 'README.rst')) as f:
+    long_description = f.read()
 
 
 class Tox(TestCommand):

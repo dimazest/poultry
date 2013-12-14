@@ -9,7 +9,7 @@ from poultry.tweet import Coordinates, Tweet
 
 class Config(object):
 
-    default_config_file = os.path.expanduser('~/.fowler.cfg')
+    default_config_file = os.path.expanduser('~/.poultry.cfg')
 
     def __init__(self, config_file):
         config = SafeConfigParser()

@@ -22,6 +22,9 @@ __pycache__
 .env
 htmlcov
 
+docs/_build
+tweets
+
 # Installer logs
 pip-log.txt
 

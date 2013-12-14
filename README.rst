@@ -12,4 +12,8 @@ poultry
    :target: https://requires.io/github/dimazest/poultry/requirements/?branch=master
    :alt: Requirements Status
 
-A tweet collection manager.
+.. If you are reading this file in a text ditor, refer to docs/user_guide.rst
+.. the user guide.
+.. include:: docs/user_guide.rst
+
+.. include:: CHANGES.rst
