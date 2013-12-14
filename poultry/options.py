@@ -30,7 +30,8 @@ class Dispatcher(opster.Dispatcher):
 
 def _middleware(func):
     def wrapper(*args, **kwargs):
-        # sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+        # Always force utf8 output.
+        sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
         if func.__name__ == 'help_inner':
             return func(*args, **kwargs)

@@ -1,8 +1,8 @@
 import os
 try:
-    from ConfigParser import SafeConfigParser, NoOptionError
+    from ConfigParser import SafeConfigParser, NoOptionError, NoSectionError
 except ImportError:
-    from configparser import SafeConfigParser, NoOptionError
+    from configparser import SafeConfigParser, NoOptionError, NoSectionError
 
 from poultry.tweet import Coordinates, Tweet
 
@@ -28,9 +28,14 @@ class Config(object):
 
     @property
     def dustbin_template(self):
-        template = self.config.get('fowler', 'dustbin_template', raw=True)
-
-        return template if template.strip() else None
+        try:
+            template = self.config.get('poultry', 'dustbin_template', raw=True)
+        except NoSectionError:
+            pass
+        except NoOptionError:
+            pass
+        else:
+            return template if template.strip() else None
 
     @property
     def _filter_sections(self):

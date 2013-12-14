@@ -1,13 +1,39 @@
 User guide
 ===========
 
+Installation
+------------
+
+You can virtualenv and pip to install ``poultry``:
+
+.. code-block:: bash
+
+    $ virtualenv -ppython2.7 .env
+    $ .env/bin/pip install poultry
+
+.. warning::
+
+    If you get strange behavior, run `poulry` in the verbose mode by
+    adding the ``-v`` flag to see possible problems.
+
+    ::
+
+        $ .env/bin/poultry -s twitter://sample group -c poultry.cfg -v
+        2013-12-14 12:40:54,922: poultry.stream - WARNING - An http error occurred. Reconnecting...
+        Traceback (most recent call last):
+          File "/Users/dimazest/Documents/qmul/tools/src/poultry/poultry/stream.py", line 86, in run
+            self._run()
+          File "/Users/dimazest/Documents/qmul/tools/src/poultry/poultry/stream.py", line 73, in _run
+            response.raise_for_status()
+          File "/Users/dimazest/Documents/qmul/tools/src/poultry/.env/lib/python2.7/site-packages/requests/models.py", line 765, in raise_for_status
+            raise HTTPError(http_error_msg, response=self)
+        HTTPError: 401 Client Error: Unauthorized
+
 Local tweet collection management
 ---------------------------------
 
 It is common to store a collection of tweets in compressed files
-grouped by hours. For example:
-
-.. code-block:: bash
+grouped by hour. For example::
 
     $ tree ./tweets
     ./tweets
@@ -19,9 +45,7 @@ grouped by hours. For example:
     └── 2012-04-21-10.gz
 
 Where each line in the files is the json representation of a
-tweet. The first two tweets in my collection look like:
-
-::
+tweet. The first two tweets in my collection look like::
 
     $ zcat ./tweets/2012-04-19-00.gz | head -n 2
     {"text":"100 days until summer Olympics","id_str":"192764446173708291","coordinates":null,"created_at":"Thu Apr 19 00:00:00 +0000 2012","in_reply_to_status_id_str":null,"favorited":false,"source":"web","in_reply_to_user_id_str":null,"entities":{"urls":[],"user_mentions":[],"hashtags":[]},"contributors":null,"place":null,"in_reply_to_screen_name":null,"in_reply_to_status_id":null,"geo":null,"user":{"is_translator":false,"statuses_count":861,"time_zone":"Quito","profile_background_color":"db4c39","id_str":"395132292","follow_request_sent":null,"verified":false,"profile_background_tile":true,"created_at":"Fri Oct 21 05:40:09 +0000 2011","profile_sidebar_fill_color":"48dbaa","default_profile_image":false,"notifications":null,"friends_count":128,"url":null,"description":"","favourites_count":0,"profile_sidebar_border_color":"e2e83f","followers_count":114,"profile_image_url":"http:\/\/a0.twimg.com\/profile_images\/1807429969\/Spring_2012_009_WarmingFilter_1_normal.jpg","screen_name":"MEL0L407","profile_use_background_image":true,"profile_background_image_url_https":"https:\/\/si0.twimg.com\/profile_background_images\/500309685\/056.JPG","location":"Floridaa","contributors_enabled":false,"lang":"en","geo_enabled":false,"profile_text_color":"0a090a","protected":false,"profile_image_url_https":"https:\/\/si0.twimg.com\/profile_images\/1807429969\/Spring_2012_009_WarmingFilter_1_normal.jpg","listed_count":0,"profile_background_image_url":"http:\/\/a0.twimg.com\/profile_background_images\/500309685\/056.JPG","name":"Melissa Townsend","profile_link_color":"7a0c41","id":395132292,"default_profile":false,"show_all_inline_media":false,"following":null,"utc_offset":-18000},"retweeted":false,"id":192764446173708291,"retweet_count":0,"in_reply_to_user_id":null,"truncated":false}
@@ -31,9 +55,7 @@ Showing the collection to humans
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``poultry show`` is a command which represents the tweets in the human
-readable form:
-
-::
+readable form::
 
     $ zcat ./tweets/2012-04-19-00.gz | head -n 2 | poultry show
     MEL0L407: 100 days until summer Olympics
@@ -44,13 +66,18 @@ readable form:
     https://twitter.com/#!/JulianSKEETER/status/192764447666864129
     2012-04-19 00:00:00
 
-in this case ``poultry`` has read the input from the standard input. It
-also can read tweets from files in a directory. ``-i`` option
-specifies which directory has to be processed by ``poultry``.
+.. note:: ``poultry`` can get data from several sources.
 
-::
+    It cat read the input from the standard input. It also can read tweets from
+    files in a directory. ``-s`` option specifies which directory has to be
+    processed by ``poultry``. If the source starts with ``twitter://`` then the
+    Twitter Streaming API is used, see `Twitter streaming API Stream capturing`_
+    for more details.
 
-    $ poultry show -i ./tweets
+Another way to get the tweets from the ``./twwets`` is to specify it via the
+``-s`` option::
+
+    $ poultry show -s ./tweets
     MEL0L407: 100 days until summer Olympics
     https://twitter.com/#!/MEL0L407/status/192764446173708291
     2012-04-19 00:00:00
@@ -59,7 +86,7 @@ specifies which directory has to be processed by ``poultry``.
     https://twitter.com/#!/JulianSKEETER/status/192764447666864129
     2012-04-19 00:00:00
 
-    ... many other tweets from the files in tweets/ ...
+    ... many other tweets from the files in ./tweets ...
 
 Grouping the collection by time
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,7 +97,7 @@ the standard input or from the input directory to chunks which are written to fi
 
 ::
 
-    $ poultry group -t 'by_day/%Y-%m-%d.gz' -i ./tweets
+    $ poultry group -t 'by_day/%Y-%m-%d.gz' -s ./tweets
     by_day/2012-04-19.gz
     by_day/2012-04-20.gz
     by_day/2012-04-21.gz
@@ -101,28 +128,28 @@ An example configuration file ``./poultry.cfg``:
 
 .. code-block:: ini
 
-    # Filter only by one word `koninginnedag`.
-    [filter:koninginnedag]
-    split_template = ./koninginnedag-%Y-%m-%d.gz
-    track = koninginnedag
+    # Filter only by one word `work`.
+    [filter:work]
+    split_template = ./work-%Y-%m-%d.gz
+    track = work
     follow =
     locations =
 
-    # Filter tweets with the phrase `reggae geel`, or
-    # which are created by or mention the user with ID `303298444`
-    [filter:reggaegeel]
-    split_template = ./reggaegeel-%Y-%m-%d.gz
-    track = reggae geel
-    follow = 303298444
+    # Filter tweets with the phrase `visit London`, or
+    # which are created by or mention the user with ID `47319664`
+    [filter:london]
+    split_template = ./london-%Y-%m-%d.gz
+    track = visit London
+    follow = 47319664
     locations =
 
-    # It is possible to mention several phrases or users
-    [filter:eurockeennes]
-    split_template = ./eurockeennes-%Y-%m-%d.gz
-    track = eurockeennes
-            eurockéennes
-    follow = 47100958
-             538134842
+    # It is possible to mention several phrases
+    [filter:love-like-hate]
+    split_template = ./love-like-hate-%Y-%m-%d.gz
+    track = love
+            like
+            hate
+    follow =
     locations =
 
     # The Netherlands are defined as two rectangles.
@@ -144,15 +171,78 @@ To filter the collection run:
 
     $ bin/poultry filter -c ./poultry.cfg  -s ./tweets
 
-Twitter Streaming API Stream capturing
+Twitter Streaming API stream capturing
 ======================================
 
-.. warning:: The describing technique is not robust. For the streaming
-             data collection you should use more advanced tools, for
-             example ``fowler.stream``.
+To get the access to the Twitter Streaming API, you need to create an
+application at https://dev.twitter.com/ and obtain ``access_token``,
+``access_token_secret``, ``consumer_key`` and ``consumer_secret``. You can get
+them from the app dashboard:
 
-You can consume a stream of tweets using curl, `but you should not <https://dev.twitter.com/docs/streaming-api/concepts#Example>`_:
+.. image:: twitter_app.png
+    :width: 100%
 
-.. code-block:: bash
 
-    curl https://stream.twitter.com/1/statuses/sample.json -uYOUR_TWITTER_USERNAME:YOUR_PASSWORD | fowler group
+and copy to  ``poultry.cfg``:
+
+.. code-block:: ini
+
+    [twitter]
+    access_token = ...
+    access_token_secret = ...
+    consumer_key = ...
+    consumer_secret = ...
+
+Accessing the public streams
+----------------------------
+
+Twitter provides several `public streams`__. The most interesting are `POST statuses/filter`__ and `GET statuses/sample`__.
+
+__ https://dev.twitter.com/docs/streaming-apis/streams/public
+__ https://dev.twitter.com/docs/api/1.1/post/statuses/filter
+__ https://dev.twitter.com/docs/api/1.1/get/statuses/sample
+
+POST statuses/filter
+~~~~~~~~~~~~~~~~~~~~
+
+Returns public statuses that match one or more filter predicates. The filtering
+predicates are defined in the configuration file.
+
+::
+
+    .env/bin/poultry -s twitter://filter show
+    GermaineBling: SJ's manager is like the 16th member of SJ 😃✨
+    https://twitter.com/#!/GermaineBling/status/411832441003704321
+    2013-12-14 12:18:00
+
+    JASMEENAJ: It's like I am seeing myself in the mirror
+    https://twitter.com/#!/JASMEENAJ/status/411832441045655553
+    2013-12-14 12:18:00
+
+The best way to collect several streams of tweets is to use the ``filter`` command::
+
+    $ .env/bin/poultry -s twitter://filter filter -c poultry.cfg -v
+    ./love-like-hate-2013-12-14.gz
+    ./work-2013-12-14.gz
+    ./netherlands-2013-12-14.gz
+
+GET statuses/sample
+~~~~~~~~~~~~~~~~~~~
+
+Returns a small random sample of all public statuses::
+
+    .env/bin/poultry -s twitter://sample show
+    Ferry_Chai: @graciel_11 wkwkwkw sama aja boong --"
+    https://twitter.com/#!/Ferry_Chai/status/411833391395266560
+    2013-12-14 12:21:46
+
+    Fofoll110: RT @itzGhadh: اللهم إشف مرضى السرطان ، و إرحم من رحلوا عن الدُنيا بسببه ♥
+    https://twitter.com/#!/Fofoll110/status/411833391383052288
+    2013-12-14 12:21:46
+
+The best way to capture a sample of tweets is to use the ``group`` command::
+
+    $ .env/bin/poultry -s twitter://sample group -c poultry.cfg
+    2013-12-14-11.gz
+    2013-12-14-12.gz
+    2013-12-14-13.gz

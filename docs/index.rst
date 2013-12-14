@@ -1,9 +1,13 @@
+=======
 Poultry
 =======
 
 Poultry is a tweet collection manager.
 
 .. include:: user_guide.rst
+
+Table of contents
+=================
 
 .. toctree::
    :maxdepth: 3
