@@ -29,6 +29,16 @@ def select(producer):
 
 
 @command()
+def text(producer):
+    """Print only tweet's text.
+
+    It replaces the new line symbol (`\n`) with a space.
+
+    """
+    producer(consumers.to_tweet(consumers.print_text()))
+
+
+@command()
 def pprint(producer):
     """Pretty print tweet's json representation."""
     producer(consumers.to_tweet(consumers.pprint()))
@@ -40,9 +50,13 @@ def filter(producer, config):
     dustbin_template = config.dustbin_template
     dustbin = consumers.group(dustbin_template) if dustbin_template is not None else None
 
-    streams = tuple((consumers.group(f.split_template),
-                     lambda c, _, f=f: c.filter(**f.predicates),
-                     ) for f in config.filters)
+    streams = tuple(
+        (
+            consumers.group(f.split_template),
+            lambda c, _, f=f: c.filter(**f.predicates),
+        )
+        for f in config.filters
+    )
     target = consumers.filter(streams, dustbin)
 
     producer(consumers.to_tweet(target))

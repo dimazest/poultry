@@ -240,3 +240,20 @@ The best way to capture a sample of tweets is to use the ``group`` command::
     2013-12-14-11.gz
     2013-12-14-12.gz
     2013-12-14-13.gz
+
+Integration with other tools
+============================
+
+If you want just to collect tweets and pass their text to your application, you
+can use the ``text`` command, which replaces the new line symbol ``\n`` with a
+space, so it should be safe assume that you will get one tweet per line::
+
+    $ .env/bin/poultry -s twitter://sample text -c poultry.cfg
+    @m1a2n0a1e テキーラはどうですか？
+    @ru_tiroru 対戦ありがとうございましたー
+    Boleh kok boleh ka"@ekhaasyari: @deidrays dih gaboleh tah?"
+    siempre te llevo en mi mente pero ni idea donde estarás
+
+and pipe it's output to your app::
+
+    $ .env/bin/poultry -s twitter://sample text -c poultry.cfg | java TheUltimateTwitterSentimentor

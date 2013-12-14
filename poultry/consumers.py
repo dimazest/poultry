@@ -62,6 +62,14 @@ def pprint():
 
 
 @consumer
+def print_text():
+    """Print only tweet's text."""
+    while True:
+        tweet = (yield)
+        print(tweet.text.replace('\n', ' '))
+
+
+@consumer
 def counter_printer(output=sys.stdout):
     while True:
         counter = yield
