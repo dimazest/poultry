@@ -20,7 +20,6 @@ def poultry_cfg(tmpdir):
         'consumer_secret=\n'
         'access_token=\n'
         'access_token_secret=\n'
-
     )
 
     return cfg

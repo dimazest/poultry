@@ -142,11 +142,8 @@ def from_twitter_api(target, endpoint, config):
     # The communication point of the consumer and producer processes.
     queue = SimpleQueue()
 
-    # Start the consumer first
-    consumer = StreamConsumer(queue, target)
-    consumer.start()
-
-    # then the producer.
+    # Create the producer first to be sure that it exists before creating and
+    # starting the consumer.
     producer = StreamProducer(
         twitter_credentials=dict(config.items('twitter')),
         target=consumers.to_simple_queue(queue),
@@ -154,11 +151,15 @@ def from_twitter_api(target, endpoint, config):
         **kwargs
     )
 
-    producer.start()
+    # start the consumer
+    consumer = StreamConsumer(queue, target)
+    consumer.start()
 
     try:
+        producer.start()
         producer.join()
     finally:
+        # Tell the consumer to stop
         queue.put(StopIteration)
         consumer.join()
 
