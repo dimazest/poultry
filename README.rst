@@ -14,6 +14,3 @@ poultry
 
 .. If you are reading this file in a text ditor, refer to docs/user_guide.rst
 .. the user guide.
-.. include:: docs/user_guide.rst
-
-.. include:: CHANGES.rst

@@ -10,6 +10,10 @@ dirname = os.path.dirname(__file__)
 
 with open(os.path.join(dirname, 'README.rst')) as f:
     long_description = f.read()
+with open(os.path.join(dirname, 'docs', 'user_guide.rst')) as f:
+    long_description += '\n' + f.read()
+with open(os.path.join(dirname, 'CHANGES.rst')) as f:
+    long_description += '\n' + f.read()
 
 
 class Tox(TestCommand):
@@ -27,7 +31,7 @@ class Tox(TestCommand):
 
 setup(
     name='poultry',
-    version='1.0',
+    version='1.0.1',
     description='A tweet collection manager.',
     long_description=long_description,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers

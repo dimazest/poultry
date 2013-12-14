@@ -167,7 +167,7 @@ To filter the collection run:
 
     $ .env/bin/poultry filter -c ./poultry.cfg  -s ./tweets
 
-Twitter Streaming API stream capturing
+Twitter streaming API Stream capturing
 ======================================
 
 To get the access to the Twitter Streaming API, you need to create an
