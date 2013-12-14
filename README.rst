@@ -12,5 +12,14 @@ Poultry
    :target: https://requires.io/github/dimazest/poultry/requirements/?branch=master
    :alt: Requirements Status
 
+.. image:: https://pypip.in/v/poultry/badge.png
+    :target: https://crate.io/packages/poultry/
+    :alt: Latest PyPI version
+
+.. image:: https://pypip.in/d/poultry/badge.png
+    :target: https://crate.io/packages/poultry/
+    :alt: Number of PyPI downloads
+
+
 :documentation: http://poultry.readthedocs.org
 :homepage: https://github.com/dimazest/poultry
