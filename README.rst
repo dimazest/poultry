@@ -23,3 +23,4 @@ Poultry
 
 :documentation: http://poultry.readthedocs.org
 :homepage: https://github.com/dimazest/poultry
+:story: http://www.eecs.qmul.ac.uk/~dm303/a-story-behind-poultry-a-twitter-streaming-api-client.html
