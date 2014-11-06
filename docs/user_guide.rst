@@ -171,7 +171,7 @@ Twitter streaming API Stream capturing
 ======================================
 
 To get the access to the Twitter Streaming API, you need to create an
-application at https://dev.twitter.com/ and obtain ``access_token``,
+application at https://apps.twitter.com/ and obtain ``access_token``,
 ``access_token_secret``, ``consumer_key`` and ``consumer_secret``. You can get
 them from the app dashboard:
 
