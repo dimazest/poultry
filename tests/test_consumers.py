@@ -4,7 +4,11 @@ except ImportError:
     from io import StringIO
 
 from collections import Counter
-from multiprocessing.queues import SimpleQueue
+
+try:
+    from multiprocessing import SimpleQueue
+except ImportError:
+    from multiprocessing.queues import SimpleQueue
 
 from poultry import consumers
 from poultry.tweet import Tweet

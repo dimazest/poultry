@@ -3,7 +3,11 @@ import logging
 from time import sleep
 from itertools import chain
 from multiprocessing import Process
-from multiprocessing.queues import SimpleQueue
+
+try:
+    from multiprocessing import SimpleQueue
+except ImportError:
+    from multiprocessing.queues import SimpleQueue
 
 import requests
 from requests_oauthlib import OAuth1Session

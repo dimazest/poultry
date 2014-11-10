@@ -1,6 +1,8 @@
 import json
 import logging
 import unicodedata
+import sys
+
 from collections import namedtuple
 from datetime import datetime
 from email.utils import parsedate_tz
@@ -300,6 +302,13 @@ class Tweet(object):
                 'created_at={s.created_at}'
                 ')>'.format(s=self)
                 )
+
+    if sys.version_info[0] >= 3: # Python 3
+        def __str__(self):
+            return self.__unicode__()
+    else:  # Python 2
+        def __str__(self):
+            return self.__unicode__().encode('utf8')
 
 
 class TweetValueError(ValueError):

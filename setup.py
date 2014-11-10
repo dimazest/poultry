@@ -43,6 +43,7 @@ setup(
         'Operating System :: MacOS :: MacOS X',
         'Topic :: Utilities',
         'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
     ],
     keywords='',
     author='Dmitrijs Milajevs',
