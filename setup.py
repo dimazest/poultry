@@ -29,7 +29,7 @@ class Tox(TestCommand):
 
 setup(
     name='poultry',
-    version='1.1.2',
+    version='1.1.3',
     description='A tweet collection manager.',
     long_description=long_description,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
