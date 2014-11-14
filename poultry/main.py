@@ -7,6 +7,9 @@ from poultry import consumers, options
 dispatcher = options.Dispatcher()
 command = dispatcher.command
 
+# Making conda_build happy
+dispatch = dispatcher.dispatch
+
 
 @command()
 def group(producer,

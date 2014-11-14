@@ -29,7 +29,7 @@ class Tox(TestCommand):
 
 setup(
     name='poultry',
-    version='1.1.0',
+    version='1.1.1',
     description='A tweet collection manager.',
     long_description=long_description,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -61,7 +61,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'poultry = poultry.main:dispatcher.dispatch',
+            'poultry = poultry.main:dispatch',
         ],
     },
     tests_require=['tox'],
