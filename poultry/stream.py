@@ -1,4 +1,3 @@
-import urllib
 import logging
 from time import sleep
 from itertools import chain
@@ -8,6 +7,15 @@ try:
     from multiprocessing import SimpleQueue
 except ImportError:
     from multiprocessing.queues import SimpleQueue
+
+try:
+    from urllib.parse import quote
+except ImportError:
+    from urllib import quote
+
+from sys import version_info
+PY2 = version_info < (3, )
+
 
 import requests
 from requests_oauthlib import OAuth1Session
@@ -59,14 +67,14 @@ class StreamProducer(Process):
     def _run(self):
         target = self.target
 
-        def quote(items):
-            # XXX It's not clear for me how the parameters have to be
-            #     quote.
-            items = (i.encode('utf-8') for i in items)
-            return urllib.quote(','.join(items), safe=', ')
+        def _quote(items):
+            # XXX It's not clear for me how the parameters have to be quote.
+            if PY2:
+                items = (i.encode('utf-8') for i in items)
+            return quote(','.join(items), safe=', ')
 
         data = {
-            p: quote(getattr(self, p)) for p in 'track follow'.split() if getattr(self, p)
+            p: _quote(getattr(self, p)) for p in 'track follow'.split() if getattr(self, p)
         }
 
         locations = ','.join(str(f) for f in chain.from_iterable(chain.from_iterable(self.locations)))
@@ -78,7 +86,7 @@ class StreamProducer(Process):
 
         line = None
         for line in response.iter_lines():
-            target.send(line)
+            target.send(line.decode('utf-8'))
         else:
             # XXX Should be changed to something meaningful
             raise EndOfStreamError(line)

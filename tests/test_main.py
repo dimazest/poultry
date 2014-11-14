@@ -16,7 +16,7 @@ def fake_response(monkeypatch, tweets):
 
         class FakeResponse:
             def iter_lines(self):
-                return iter(tweets)
+                return iter(t.encode('utf-8') for t in tweets)
 
             def raise_for_status(self):
                 pass

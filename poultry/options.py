@@ -19,6 +19,7 @@ class Dispatcher(opster.Dispatcher):
                 ('v', 'verbose', False, 'Be verbose.'),
                 ('c', 'config', Config.default_config_file, 'Configuration file'),
                 ('s', 'source', '', 'The tweet source.'),
+                ('', 'utf8', False, 'Force UTF8 output.'),
             )
         )
 
@@ -30,8 +31,10 @@ class Dispatcher(opster.Dispatcher):
 
 def _middleware(func):
     def wrapper(*args, **kwargs):
-        # Always force utf8 output.
-        sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+
+        if kwargs.pop('utf8'):
+            # Always force utf8 output.
+            sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
         if func.__name__ == 'help_inner':
             return func(*args, **kwargs)

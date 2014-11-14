@@ -3,6 +3,8 @@ try:
     from ConfigParser import SafeConfigParser, NoOptionError, NoSectionError
 except ImportError:
     from configparser import SafeConfigParser, NoOptionError, NoSectionError
+from sys import version_info
+PY2 = version_info < (3, )
 
 from poultry.tweet import Coordinates, Tweet
 
@@ -24,7 +26,9 @@ class Config(object):
 
     def get_elements(self, section, option):
         value = self.config.get(section, option)
-        return tuple(filter(None, (value.decode('utf-8').strip().split('\n'))))
+        if PY2:
+            value = value.decode('utf-8')
+        return tuple(filter(None, (value.strip().split('\n'))))
 
     @property
     def dustbin_template(self):
