@@ -1,9 +1,7 @@
 import os
 import sys
 
-from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
-
+from setuptools import setup, find_packages, Command
 
 dirname = os.path.dirname(__file__)
 
@@ -14,22 +12,23 @@ with open(os.path.join(dirname, 'CHANGES.rst')) as f:
     long_description += '\n' + f.read()
 
 
-class Tox(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = ['--recreate']
-        self.test_suite = True
+class PyTest(Command):
+    user_options = []
+    def initialize_options(self):
+        pass
 
-    def run_tests(self):
-        #import here, cause outside the eggs aren't loaded
-        import tox
-        errno = tox.cmdline(self.test_args)
-        sys.exit(errno)
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import sys,subprocess
+        errno = subprocess.call([sys.executable, 'runtests.py', 'tests'])
+        raise SystemExit(errno)
 
 
 setup(
     name='poultry',
-    version='1.1.3',
+    version='1.2.0',
     description='A tweet collection manager.',
     long_description=long_description,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -64,6 +63,5 @@ setup(
             'poultry = poultry.main:dispatch',
         ],
     },
-    tests_require=['tox'],
-    cmdclass={'test': Tox},
+    cmdclass={'test': PyTest},
 )

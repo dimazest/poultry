@@ -1,6 +1,12 @@
 Changes
 =======
 
+1.2.0
+-----
+
+* Windows support.
+* `-o` option for `text` to print tweets to a file.
+
 1.1.1
 -----
 

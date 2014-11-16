@@ -19,6 +19,8 @@ def consume_stream(target, input_dir=None):
         with consumers.closing(target):
 
             for line in lines:
+                if isinstance(line, bytes):
+                    line = line.decode('utf-8')
                 result = target.send(line)
 
                 if result is not consumers.SendNext:

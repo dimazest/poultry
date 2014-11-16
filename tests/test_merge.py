@@ -77,7 +77,7 @@ def test_merge_tweets(tweets):
                                               ]
 
 
-@pytest.mark.xfail(reason='If the last source is empty, the priority information is lost!')
+@pytest.mark.skipif(True, reason='If the last source is empty, the priority information is lost!')
 def test_merge_empty():
     result = []
     sink = to_list(result)
@@ -92,7 +92,7 @@ def test_merge_empty():
     assert not result
 
 
-@pytest.mark.xfail(reason='If the last source is empty, the priority information is lost!')
+@pytest.mark.skipif(True, reason='If the last source is empty, the priority information is lost!')
 def test_merge_empty_one():
     result = []
     sink = to_list(result)

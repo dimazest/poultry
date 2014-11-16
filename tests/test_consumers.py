@@ -6,9 +6,9 @@ except ImportError:
 from collections import Counter
 
 try:
-    from multiprocessing import SimpleQueue
+    from queue import Queue
 except ImportError:
-    from multiprocessing.queues import SimpleQueue
+    from Queue.queues import Queue
 
 from poultry import consumers
 from poultry.tweet import Tweet
@@ -179,8 +179,8 @@ def test_split():
     assert result_a == result_b == input_
 
 
-def test_simple_queue():
-    q = SimpleQueue()
+def test_queue():
+    q = Queue()
     input_ = [1, 2, 3, 4, 5, 6]
     from_iterable(consumers.to_simple_queue(q), input_)
 

@@ -62,12 +62,11 @@ def pprint():
 
 
 @consumer
-def print_text():
+def print_text(output=sys.stdout):
     """Print only tweet's text."""
     while True:
-        tweet = (yield)
-        print(tweet.text.replace('\n', ' '))
-
+        tweet = yield
+        print(tweet.text.replace(u'\n', u' '), file=output)
 
 @consumer
 def counter_printer(output=sys.stdout):
@@ -119,7 +118,7 @@ def group(file_name_template='%Y-%m-%d-%H.gz',
                     _, first = files.popitem(last=False)
                     first.close()
 
-                f = gzip.open(created_at, 'a')
+                f = gzip.open(created_at, 'at')
                 files[created_at] = f
 
             f.write("{t}\n".format(t=tweet.raw))

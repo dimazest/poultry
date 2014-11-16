@@ -1,12 +1,11 @@
 import logging
 from time import sleep
 from itertools import chain
-from multiprocessing import Process
-
+from threading import Thread
 try:
-    from multiprocessing import SimpleQueue
+    from Queue import Queue
 except ImportError:
-    from multiprocessing.queues import SimpleQueue
+    from queue import Queue
 
 try:
     from urllib.parse import quote
@@ -26,7 +25,7 @@ from poultry import consumers
 logger = logging.getLogger(__name__)
 
 
-class StreamProducer(Process):
+class StreamProducer(Thread):
     """A producer of a tweet stream retrieved from twitter.
 
     :param target: A coroutine to which collected tweets are sent.
@@ -108,7 +107,7 @@ class StreamProducer(Process):
             pass
 
 
-class StreamConsumer(Process):
+class StreamConsumer(Thread):
     """A consumer of a stream of tweets."""
     def __init__(self, queue, target, *args, **kwargs):
         super(StreamConsumer, self).__init__(*args, **kwargs)
@@ -152,7 +151,7 @@ def from_twitter_api(target, endpoint, config):
         kwargs = {}
 
     # The communication point of the consumer and producer processes.
-    queue = SimpleQueue()
+    queue = Queue()
 
     # Create the producer first to be sure that it exists before creating and
     # starting the consumer.

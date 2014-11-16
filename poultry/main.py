@@ -32,13 +32,24 @@ def select(producer):
 
 
 @command()
-def text(producer):
+def text(
+    producer,
+    output=('o', '-', 'Output file, by default standartd output is used.'),
+    encoding=('', 'utf-8', 'Output file encoding.')
+):
     """Print only tweet's text.
 
-    It replaces the new line symbol (`\n`) with a space.
+    It replaces the new line symbol (\\n) with a space.
 
     """
-    producer(consumers.to_tweet(consumers.print_text()))
+    def flow(out=None):
+        producer(consumers.to_tweet(consumers.print_text(output=out)))
+
+    if output != '-':
+        with open(output, 'wt', encoding=encoding) as f:
+            flow(f)
+    else:
+        flow()
 
 
 @command()
