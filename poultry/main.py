@@ -20,9 +20,13 @@ def group(producer,
 
 
 @command()
-def show(producer):
+def show(
+    producer,
+    template=('t', u'{t}\n', 'Message template.'),
+
+):
     """Print tweets in human readable form."""
-    producer(consumers.to_tweet(consumers.show()))
+    producer(consumers.to_tweet(consumers.show(template=template)))
 
 
 @command()
@@ -35,7 +39,7 @@ def select(producer):
 def text(
     producer,
     output=('o', '-', 'Output file, by default standartd output is used.'),
-    encoding=('', 'utf-8', 'Output file encoding.')
+    encoding=('', 'utf-8', 'Output file encoding.'),
 ):
     """Print only tweet's text.
 

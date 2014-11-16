@@ -37,10 +37,10 @@ def nop(*args, **kwargs):
 
 
 @consumer
-def show(template=u'{}\n'):
+def show(template=u'{t}\n'):
     """Print tweet text and meta information."""
     while True:
-        print(template.format((yield)))
+        print(template.format(t=(yield)))
 
 
 @consumer
