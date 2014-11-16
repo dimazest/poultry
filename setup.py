@@ -1,7 +1,8 @@
 import os
 import sys
 
-from setuptools import setup, find_packages, Command
+from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
 
 dirname = os.path.dirname(__file__)
 
@@ -12,7 +13,7 @@ with open(os.path.join(dirname, 'CHANGES.rst')) as f:
     long_description += '\n' + f.read()
 
 
-class PyTest(Command):
+class PyTest(TestCommand):
     user_options = []
     def initialize_options(self):
         pass

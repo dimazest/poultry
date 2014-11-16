@@ -8,7 +8,7 @@ from collections import Counter
 try:
     from queue import Queue
 except ImportError:
-    from Queue.queues import Queue
+    from Queue import Queue
 
 from poultry import consumers
 from poultry.tweet import Tweet
