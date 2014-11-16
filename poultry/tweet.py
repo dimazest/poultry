@@ -215,6 +215,7 @@ class Tweet(object):
 
         return any(entity_violations) or lenght_violantion
 
+
     def filter(self,
                follow=None,
                track=None,
