@@ -14,17 +14,15 @@ with open(os.path.join(dirname, 'CHANGES.rst')) as f:
 
 
 class PyTest(TestCommand):
-    user_options = []
-    def initialize_options(self):
-        pass
-
     def finalize_options(self):
-        pass
-
-    def run(self):
-        import sys,subprocess
-        errno = subprocess.call([sys.executable, 'runtests.py', 'tests'])
-        raise SystemExit(errno)
+        TestCommand.finalize_options(self)
+        self.test_args = 'tests'
+        self.test_suite = True
+    def run_tests(self):
+        # import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(self.test_args)
+        sys.exit(errno)
 
 
 setup(
@@ -65,4 +63,7 @@ setup(
         ],
     },
     cmdclass={'test': PyTest},
+    tests_require=[
+        'pytest>=2.4.2',
+    ],
 )
