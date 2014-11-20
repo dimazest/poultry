@@ -2,8 +2,9 @@ import fileinput
 import contextlib
 
 from poultry import consumers
-from poultry.utils import get_file_names
 from poultry.stream import from_twitter_api
+from poultry.tweet import Tweet
+from poultry.utils import get_file_names
 
 
 def consume_stream(target, input_dir=None):
@@ -16,15 +17,31 @@ def consume_stream(target, input_dir=None):
     file_names = get_file_names(input_dir) if input_dir else []
 
     with contextlib.closing(fileinput.FileInput(file_names, openhook=fileinput.hook_compressed)) as lines:
-        with consumers.closing(target):
+        targets = [target] if target is not None else []
+        with consumers.closing(*targets):
 
             for line in lines:
                 if isinstance(line, bytes):
                     line = line.decode('utf-8')
-                result = target.send(line)
 
-                if result is not consumers.SendNext:
-                    yield result
+                if target is not None:
+                    result = target.send(line)
+                    if result is not consumers.SendNext:
+                        yield result
+                else:
+                    yield line
+
+
+def readline_dir(input_dir):
+    """Read a tweet collection directory.
+
+    :param str input_dir: the patht to the directory
+
+    :return: an iterable of Tweet objects
+
+    """
+    for l in consume_stream(target=None, input_dir=input_dir):
+        yield Tweet(l)
 
 
 def from_stream(target, source=None, config=None):
@@ -36,9 +53,10 @@ def from_stream(target, source=None, config=None):
 
     """
     if source in ('twitter://sample', 'twitter://filter'):
-        from_twitter_api(target, source, config)
+        consumer = from_twitter_api(target, source, config)
     else:
         consumer = consume_stream(target, source)
+
         try:
             while True:
                 next(consumer)

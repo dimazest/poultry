@@ -18,6 +18,7 @@ class PyTest(TestCommand):
         TestCommand.finalize_options(self)
         self.test_args = 'tests'
         self.test_suite = True
+
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded
         import pytest
@@ -27,7 +28,7 @@ class PyTest(TestCommand):
 
 setup(
     name='poultry',
-    version='1.2.0',
+    version='1.3.0',
     description='A tweet collection manager.',
     long_description=long_description,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers

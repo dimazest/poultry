@@ -257,3 +257,19 @@ space, so it should be safe assume that you will get one tweet per line::
 and pipe it's output to your app::
 
     $ .env/bin/poultry -s twitter://sample text -c poultry.cfg | java TheUltimateTwitterSentimentor
+
+Iterating over a collection of tweets
+=====================================
+
+It is possible to iterate over a colletion of tweets:
+
+.. code-block:: python
+
+    >>> from poultry import readline_dir
+
+    >>> for tweet in readline_dir('./tweets/'):
+    ...     print(tweet.id, tweet.parsed['user']['screen_name'])
+    535436910794387460 dimazest
+    535432030939791360 dimazest
+
+`New in version 1.3.0`
