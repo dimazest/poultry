@@ -124,6 +124,10 @@ An example configuration file ``./poultry.cfg``:
 
 .. code-block:: ini
 
+    # A trick to be able to specify hastags as individual tracking words.
+    [DEFAULT]
+    hash = #
+
     # Filter only by one word `work`.
     [filter:work]
     split_template = ./work-%Y-%m-%d.gz
@@ -155,6 +159,16 @@ An example configuration file ``./poultry.cfg``:
     follow =
     locations = 3.734090,51.560411,5.667684,52.493220
                 3.821980,51.934515,7.040975,53.687342
+
+    [filter:hashtags]
+    split_template = data/hashtags/%Y-%m-%d.gz
+    track =
+            # this line is ignored
+            # in the next line %(hash)s is substituted with #.
+            %(hash)slisten
+            %(hash)smusic
+            %(hash)slol
+
 
 The predicates in the filter are ORed, meaning that a tweet to be
 filtered has to satisfy at least one predicate.

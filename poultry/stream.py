@@ -70,7 +70,7 @@ class StreamProducer(Thread):
             # XXX It's not clear for me how the parameters have to be quote.
             if PY2:
                 items = (i.encode('utf-8') for i in items)
-            return quote(','.join(items), safe=', ')
+            return ','.join(items)
 
         data = {
             p: _quote(getattr(self, p)) for p in 'track follow'.split() if getattr(self, p)
