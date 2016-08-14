@@ -1,9 +1,15 @@
 Changes
 =======
 
-1.3.0
+dev
+---
 
-* The ```poultry.readline_dir()`` generator iterates over a collection of tweets
+* `poultry.readline_dir()` ignores empty lines in the input.
+
+1.3.0
+-----
+
+* The `poultry.readline_dir()` generator iterates over a collection of tweets
   and yields ``Tweet`` objects.
 
 1.2.0

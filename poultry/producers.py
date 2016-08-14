@@ -41,7 +41,8 @@ def readline_dir(input_dir):
 
     """
     for l in consume_stream(target=None, input_dir=input_dir):
-        yield Tweet(l)
+        if l.strip():
+            yield Tweet(l)
 
 
 def from_stream(target, source=None, config=None):
