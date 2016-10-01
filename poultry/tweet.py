@@ -324,3 +324,4 @@ class Coordinates(namedtuple('Coordiantes', 'lon lat')):
             return x[:2], x[2:]
 
         return two_pairs(float(i.strip()) for i in s.split(','))
+

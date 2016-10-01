@@ -1,10 +1,14 @@
 import fileinput
 import contextlib
+import logging
 
 from poultry import consumers
 from poultry.stream import from_twitter_api
 from poultry.tweet import Tweet
 from poultry.utils import get_file_names
+
+
+logger = logging.getLogger(__name__)
 
 
 def consume_stream(target, input_dir=None):
@@ -24,6 +28,10 @@ def consume_stream(target, input_dir=None):
                 if isinstance(line, bytes):
                     line = line.decode('utf-8')
 
+                if u'\\u0000' in line:
+                    logger.warn('\\u0000 is found in text, the line is ignored.')  # postgresql doesn't support them!
+                    continue
+
                 if target is not None:
                     result = target.send(line)
                     if result is not consumers.SendNext:
@@ -42,7 +50,10 @@ def readline_dir(input_dir):
     """
     for l in consume_stream(target=None, input_dir=input_dir):
         if l.strip():
-            yield Tweet(l)
+            try:
+                yield Tweet(l)
+            except ValueError:
+                pass
 
 
 def from_stream(target, source=None, config=None):
