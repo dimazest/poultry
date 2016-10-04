@@ -72,7 +72,7 @@ def filter(
         (
             consumers.group(f.split_template, mode=mode)
             if f.split_template != '--'
-            else consumers.show(output=output, template='{t.}'),
+            else consumers.show(output=output, template='{t.raw}'),
             lambda c, _, f=f: c.filter(**f.predicates),
         )
         for f in filters_to_include
