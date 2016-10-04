@@ -1,15 +1,16 @@
 Changes
 =======
 
-1.5.0 (in the development)
---------------------------
+1.5.0 (in development)
+----------------------
 
 * ``language`` filtering predicate.
 * The ``--mode`` parameter for the ``filter`` subcommand that sets the file opening
   mode. Use `w` to rewrite the files and `a` (the default) to append.
 * The ``-u`` (force UTF-8 output) option is removed. ``--output`` and
   ``--encoding`` are added instead.
- * The South-West point of tweet's place is used if its coordinate is not provided.
+* The South-West point of tweet's place is used if its coordinate is not provided.
+* The ``--filters`` option for ``filter`` to define what filters are used.
 
 1.3.0
 -----
