@@ -3,9 +3,9 @@ from time import sleep
 from itertools import chain
 from threading import Thread
 try:
-    from Queue import Queue
+    from Queue import Queue, Full
 except ImportError:
-    from queue import Queue
+    from queue import Queue, Full
 
 try:
     from urllib.parse import quote
@@ -81,7 +81,15 @@ class StreamProducer(Thread):
         locations = ','.join(str(f) for f in chain.from_iterable(chain.from_iterable(self.locations)))
         if locations:
             data['locations'] = locations
-        response = self.client.post(self.url, data=data, stream=True)
+
+        logger.warn('The client is about to send a POST request.')
+        response = self.client.post(
+            self.url,
+            data=data,
+            stream=True,
+            timeout=(3.05, 90.05),
+        )
+        logger.warn('The POST request is sent.')
 
         response.raise_for_status()
 
@@ -100,13 +108,16 @@ class StreamProducer(Thread):
                 # XXX implement meaningful reconnection strategy.
                 #     https://dev.twitter.com/docs/streaming-apis/connecting#Reconnecting
                 except requests.HTTPError:
-                    logger.warn('An http error occurred. Reconnecting...', exc_info=True)
-                    sleep(10)
-                except EndOfStreamError:
-                    logger.warn('The stream ended. Reconnecting...', exc_info=True)
+                    logger.warn('An http error occurred. Reconnecting in a minute.', exc_info=True)
                     sleep(60)
+                except EndOfStreamError:
+                    logger.warn('The stream ended. Reconnecting in a minute.', exc_info=True)
+                    sleep(60)
+                except StopIteration:
+                    logger.warn('The queue is full.')
+                    break
         except KeyboardInterrupt:
-            pass
+            raise
 
 
 class StreamConsumer(Thread):
@@ -144,6 +155,7 @@ def from_twitter_api(target, endpoint, config):
 
     if endpoint == 'twitter://filter':
         filter_predicates = config.global_filter.predicates
+
         kwargs = {
             'follow': filter_predicates['follow'],
             'track': filter_predicates['track'],
@@ -154,7 +166,7 @@ def from_twitter_api(target, endpoint, config):
         kwargs = {}
 
     # The communication point of the consumer and producer processes.
-    queue = Queue()
+    queue = Queue(maxsize=100)
 
     # Create the producer first to be sure that it exists before creating and
     # starting the consumer.
@@ -169,13 +181,17 @@ def from_twitter_api(target, endpoint, config):
     consumer = StreamConsumer(queue, target)
     consumer.start()
 
+    producer.start()
     try:
-        producer.start()
         producer.join()
     finally:
         # Tell the consumer to stop
-        queue.put(StopIteration)
-        consumer.join()
+        try:
+            queue.put(StopIteration, block=False)
+        except Full:
+            pass
+        else:
+            consumer.join()
 
 
 class EndOfStreamError(IOError):

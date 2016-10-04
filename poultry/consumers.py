@@ -4,6 +4,10 @@ import gzip
 import logging
 import sys
 import time
+try:
+    from Queue import Full
+except ImportError:
+    from queue import Full
 
 from collections import OrderedDict, Counter
 from contextlib import contextmanager
@@ -67,6 +71,7 @@ def print_text(output=sys.stdout):
     while True:
         tweet = yield
         print(tweet.text.replace(u'\n', u' '), file=output)
+
 
 @consumer
 def counter_printer(output=sys.stdout):
@@ -202,7 +207,13 @@ def to_simple_queue(queue):
     """Put items to a simple queue."""
     while True:
         item = yield
-        queue.put(item)
+        size = queue.qsize()
+        if size:
+            logger.warn('Queue size is %s.', size)
+        try:
+            queue.put(item, timeout=1)
+        except Full:
+            break
 
 
 @consumer

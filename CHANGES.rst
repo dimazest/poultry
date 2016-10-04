@@ -11,6 +11,7 @@ Changes
   ``--encoding`` are added instead.
 * The South-West point of tweet's place is used if its coordinate is not provided.
 * The ``--filters`` option for ``filter`` to define what filters are used.
+* Refactored communication with Twitter and internal stream handling.
 
 1.3.0
 -----
