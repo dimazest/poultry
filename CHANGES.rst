@@ -7,11 +7,13 @@ Changes
 * ``language`` filtering predicate.
 * The ``--mode`` parameter for the ``filter`` subcommand that sets the file opening
   mode. Use `w` to rewrite the files and `a` (the default) to append.
+* The ``-u`` (force UTF-8 output) option is removed. ``--output`` and
+  ``--encoding`` are added instead.
 
 1.3.0
 -----
 
-* The ```poultry.readline_dir()`` generator iterates over a collection of tweets
+* The ``poultry.readline_dir()`` generator iterates over a collection of tweets
   and yields ``Tweet`` objects.
 
 1.2.0

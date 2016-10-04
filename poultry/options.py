@@ -1,4 +1,3 @@
-import codecs
 import inspect
 import logging
 import sys
@@ -19,7 +18,8 @@ class Dispatcher(opster.Dispatcher):
                 ('v', 'verbose', False, 'Be verbose.'),
                 ('c', 'config', Config.default_config_file, 'Configuration file'),
                 ('s', 'source', '', 'The tweet source.'),
-                ('u', 'utf8', False, 'Force UTF8 output.'),
+                ('o', 'output',  '-', 'Output file, by default standartd output is used.'),
+                ('e', 'encoding', 'utf-8', 'Output file encoding.'),
             )
         )
 
@@ -34,10 +34,6 @@ def _middleware(func):
 
         if func.__name__ == 'help_inner':
             return func(*args, **kwargs)
-
-        if kwargs.pop('utf8'):
-            # Always force utf8 output.
-            sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
         f_args = inspect.getargspec(func)[0]
 

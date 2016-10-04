@@ -30,30 +30,22 @@ def show(
 
 
 @command()
-def select(producer):
+def select(producer, output):
     """Print tweets as it is returned by the Twitter streaming API."""
-    producer(consumers.print_())
+    producer(consumers.print_(output=output))
 
 
 @command()
 def text(
     producer,
-    output=('o', '-', 'Output file, by default standartd output is used.'),
-    encoding=('', 'utf-8', 'Output file encoding.'),
+    output,
 ):
     """Print only tweet's text.
 
     It replaces the new line symbol (\\n) with a space.
 
     """
-    def flow(out=None):
-        producer(consumers.to_tweet(consumers.print_text(output=out)))
-
-    if output != '-':
-        with open(output, 'wt', encoding=encoding) as f:
-            flow(f)
-    else:
-        flow()
+    producer(consumers.to_tweet(consumers.print_text(output=output)))
 
 
 @command()
