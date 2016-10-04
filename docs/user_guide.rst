@@ -125,9 +125,10 @@ order for a tweet to be filtered:
     a list of phrases that a tweet should contain to be filtered. In
     the configuration file one phrase per line is expected.
   * `locations
-    <https://dev.twitter.com/docs/streaming-apis/parameters#locations>`_
-    a list of longitude, latitude pairs specifying a set of bounding
-    boxes to filter tweets by.
+    <https://dev.twitter.com/docs/streaming-apis/parameters#locations>`_ a list
+    of longitude, latitude pairs specifying a set of bounding boxes to filter
+    tweets by. The South-West point of tweet's place is used if its coordinate
+    is not provided.
 
 It is possible to provide a desired `language
 <https://dev.twitter.com/streaming/overview/request-parameters#language>`_ of

@@ -9,6 +9,7 @@ Changes
   mode. Use `w` to rewrite the files and `a` (the default) to append.
 * The ``-u`` (force UTF-8 output) option is removed. ``--output`` and
   ``--encoding`` are added instead.
+ * The South-West point of tweet's place is used if its coordinate is not provided.
 
 1.3.0
 -----

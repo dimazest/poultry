@@ -146,6 +146,16 @@ class Tweet(object):
             if coor and coor['type'] == 'Point':
                 return Coordinates(*coor['coordinates'])
 
+        try:
+            place = self.parsed['place']
+        except KeyError:
+            pass
+        else:
+            if place and place['bounding_box']:
+                return Coordinates(
+                    *place['bounding_box']['coordinates'][0][0]
+                )
+
     @property
     def twitter_url(self):
         '''
@@ -261,8 +271,11 @@ class Tweet(object):
         coor = self.coordinates
         place = self.parsed['place']
         if coor:
-            common_location = (sw[0] <= coor.lon <= ne[0] and sw[1] <= coor.lat <= ne[1]
-                               for sw, ne in locations)
+            common_location = (
+                sw[0] <= coor.lon <= ne[0] and
+                sw[1] <= coor.lat <= ne[1]
+                for sw, ne in locations
+            )
         elif place and place['bounding_box']:
             # XXX Is it always a rectangle?
             bounding_box = place['bounding_box']['coordinates'][0]
