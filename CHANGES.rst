@@ -5,6 +5,8 @@ Changes
 --------------------------
 
 * ``language`` filtering predicate.
+* The ``--mode`` parameter for the ``filter`` subcommand that sets the file opening
+  mode. Use `w` to rewrite the files and `a` (the default) to append.
 
 1.3.0
 -----
@@ -16,7 +18,7 @@ Changes
 -----
 
 * Windows support.
-* `-o` option for `text` to print tweets to a file.
+* ``-o`` option for ``text`` to print tweets to a file.
 
 1.1.1
 -----

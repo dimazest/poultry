@@ -146,6 +146,9 @@ definition of a filter that, for example, selects the Dutch tweets and apply it
 to several collections by redirecting the standard output to different
 destinations.
 
+The ``--mode`` parameter for the ``filter`` subcommand that sets the file opening
+mode. Use `w` to rewrite the files and `a` (the default) to append.
+
 An example configuration file ``./poultry.cfg``:
 
 .. code-block:: ini
@@ -192,7 +195,7 @@ An example configuration file ``./poultry.cfg``:
     language = nl
 
     [filter:hashtags]
-    split_template = data/hashtags/%Y-%m-%d.gz
+    split_template = ./hashtags/%Y-%m-%d.gz
     track =
             # this line is ignored
             # in the next line %(hash)s is substituted with #

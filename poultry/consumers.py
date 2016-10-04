@@ -95,9 +95,11 @@ def to_tweet(target):
 
 
 @consumer
-def group(file_name_template='%Y-%m-%d-%H.gz',
-          max_open_files=1,
-          ):
+def group(
+    file_name_template='%Y-%m-%d-%H.gz',
+    max_open_files=1,
+    mode='a',
+):
     """Group tweets to files by date according to the file_name_template."""
     files = OrderedDict()
 
@@ -118,7 +120,7 @@ def group(file_name_template='%Y-%m-%d-%H.gz',
                     _, first = files.popitem(last=False)
                     first.close()
 
-                f = gzip.open(created_at, 'at')
+                f = gzip.open(created_at, '{}t'.format(mode))
                 files[created_at] = f
 
             f.write("{t}\n".format(t=tweet.raw))
