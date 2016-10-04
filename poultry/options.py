@@ -61,6 +61,19 @@ def _middleware(func):
         else:
             logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.CRITICAL)
 
+        encoding = kwargs.pop('encoding')
+        output = kwargs.pop('output')
+
+        if output != '-':
+            output = open(output, 'wt', encoding=encoding)
+            to_close = output
+        else:
+            output = sys.stdout
+            to_close = None
+
+        if 'output' in f_args:
+            kwargs['output'] = output
+
         try:
             return func(*args, **kwargs)
         except KeyboardInterrupt:
@@ -68,5 +81,8 @@ def _middleware(func):
         except Exception:
             logger.error('Middleware captured an exception', exc_info=True)
             raise
+        finally:
+            if to_close is not None:
+                to_close.close()
 
     return wrapper

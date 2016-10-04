@@ -113,7 +113,8 @@ class Filter(object):
 
         self.split_template = split_template
         # XXX that's kind of a hack
-        self.name = name.replace(':', '_') if name is not None else None
+        # self.name = name.replace(':', '_') if name is not None else None
+        self.name = name
 
         self.start_date = Tweet._created_at_to_datetime(start_date) if start_date is not None else None
         self.end_date = Tweet._created_at_to_datetime(end_date) if end_date is not None else None
