@@ -1,7 +1,13 @@
 Changes
 =======
 
+1.5.0 (in the development)
+--------------------------
+
+* ``language`` filtering predicate.
+
 1.3.0
+-----
 
 * The ```poultry.readline_dir()`` generator iterates over a collection of tweets
   and yields ``Tweet`` objects.

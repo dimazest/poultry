@@ -128,6 +128,10 @@ class Tweet(object):
         return self.parsed['id']
 
     @property
+    def lang(self):
+        return self.parsed['lang']
+
+    @property
     def coordinates(self):
         """The location of the tweet.
 
@@ -215,11 +219,11 @@ class Tweet(object):
 
         return any(entity_violations) or lenght_violantion
 
-
     def filter(self,
                follow=None,
                track=None,
                locations=None,
+               language=None,
                start_date=None,
                end_date=None,
                ):
@@ -248,9 +252,11 @@ class Tweet(object):
 
         track = set(unicode(t.lower()) for t in track) if track is not None else set()
         locations = set(locations) if locations is not None else set()
+        language = set(language) if language is not None else set()
 
         common_follow = follow.intersection(self.user_mentions) or self.user_id in follow
         common_track = (t.lower() in self.text.lower() for t in track)
+        common_language = self.lang in language if language else True
 
         coor = self.coordinates
         place = self.parsed['place']
@@ -278,13 +284,15 @@ class Tweet(object):
             common_location = []
 
         search_terms = ([follow, track, locations])
-        common = any([common_follow,
-                      any(common_track),
-                      any(common_location),
-                      ]
-                     )
+        common = any(
+            [
+                common_follow,
+                any(common_track),
+                any(common_location),
+            ]
+        )
 
-        return bool(not any(search_terms) or common)
+        return bool(not any(search_terms) or common) and common_language
 
     def __unicode__(self):
         return (

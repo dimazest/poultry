@@ -4,26 +4,34 @@ User guide
 Installation
 ------------
 
-You can use virtualenv and pip to install ``poultry``::
+Use `pip`` to install ``poultry``::
 
-    $ virtualenv -ppython2.7 .env
+    $ pip install poultry
+
+Alternatively, you can use virtualenv and pip to install ``poultry``::
+
+    $ virtualenv .env
     $ .env/bin/pip install poultry
 
-If you get strange behavior, run `poulry` in the verbose mode by adding the
-``-v`` flag to see possible problems.
+.. tip::
 
-::
+    If you get a strange behavior, run ``poulry`` in the verbose mode by adding
+    the ``-v`` flag to see the possible problems.
 
-    $ .env/bin/poultry -s twitter://sample group -c poultry.cfg -v
-    2013-12-14 12:40:54,922: poultry.stream - WARNING - An http error occurred. Reconnecting...
-    Traceback (most recent call last):
-      File "/Users/dimazest/Documents/qmul/tools/src/poultry/poultry/stream.py", line 86, in run
-        self._run()
-      File "/Users/dimazest/Documents/qmul/tools/src/poultry/poultry/stream.py", line 73, in _run
-        response.raise_for_status()
-      File "/Users/dimazest/Documents/qmul/tools/src/poultry/.env/lib/python2.7/site-packages/requests/models.py", line 765, in raise_for_status
-        raise HTTPError(http_error_msg, response=self)
-    HTTPError: 401 Client Error: Unauthorized
+    ::
+
+        $ .env/bin/poultry -s twitter://sample group -c poultry.cfg -v
+        2013-12-14 12:40:54,922: poultry.stream - WARNING - An http error occurred. Reconnecting...
+        Traceback (most recent call last):
+          File "/Users/dimazest/Documents/qmul/tools/src/poultry/poultry/stream.py", line 86, in run
+            self._run()
+          File "/Users/dimazest/Documents/qmul/tools/src/poultry/poultry/stream.py", line 73, in _run
+            response.raise_for_status()
+          File "/Users/dimazest/Documents/qmul/tools/src/poultry/.env/lib/python2.7/site-packages/requests/models.py", line 765, in raise_for_status
+            raise HTTPError(http_error_msg, response=self)
+        HTTPError: 401 Client Error: Unauthorized
+
+    The error above suggests that the Twitter credentials are incorrect.
 
 Local tweet collection management
 ---------------------------------
@@ -105,8 +113,9 @@ files in the current directory.
 Filter the collection
 ---------------------
 
-It is possible to filter the tweets of interest from the
-collection. The tweets can be filtered by three predicates:
+It is possible to filter the tweets of interest from the collection. The tweets
+can be filtered by three **main predicates**. Either of them needs to be true in
+order for a tweet to be filtered:
 
   * `follow
     <https://dev.twitter.com/docs/streaming-apis/parameters#follow>`_
@@ -120,11 +129,28 @@ collection. The tweets can be filtered by three predicates:
     a list of longitude, latitude pairs specifying a set of bounding
     boxes to filter tweets by.
 
+It is possible to provide a desired `language
+<https://dev.twitter.com/streaming/overview/request-parameters#language>`_ of
+the tweets using the ``language`` predicate. Note that ``language`` is an
+**additional predicate**. A main predicate has to be provided if the `POST
+statuses/filter endpoint
+<https://dev.twitter.com/streaming/reference/post/statuses/filter>`_ is used,
+however it can be the only predicate if filtering is done locally. Also, the
+``language`` predicate has to be true in order for a tweet to belong to a
+filter.
+
+``split_template`` defines the destination path of the filtered stream. Use ``--``
+to make it output to the console. This is useful in conjunction with the
+``--filters`` parameter of ``poultry filter``. Then you can have a general
+definition of a filter that, for example, selects the Dutch tweets and apply it
+to several collections by redirecting the standard output to different
+destinations.
+
 An example configuration file ``./poultry.cfg``:
 
 .. code-block:: ini
 
-    # A trick to be able to specify hastags as individual tracking words.
+    # A trick to be able to specify hashtags as individual tracking words.
     [DEFAULT]
     hash = #
 
@@ -134,6 +160,7 @@ An example configuration file ``./poultry.cfg``:
     track = work
     follow =
     locations =
+    language =
 
     # Filter tweets with the phrase `visit London`, or
     # which are created by or mention the user with ID `47319664`
@@ -142,6 +169,7 @@ An example configuration file ``./poultry.cfg``:
     track = visit London
     follow = 47319664
     locations =
+    language =
 
     # It is possible to mention several phrases
     [filter:love-like-hate]
@@ -151,6 +179,7 @@ An example configuration file ``./poultry.cfg``:
             hate
     follow =
     locations =
+    language =
 
     # The Netherlands are defined as two rectangles.
     [filter:netherlands]
@@ -159,21 +188,41 @@ An example configuration file ``./poultry.cfg``:
     follow =
     locations = 3.734090,51.560411,5.667684,52.493220
                 3.821980,51.934515,7.040975,53.687342
+    # Request only the Dutch tweets from the location above.
+    language = nl
 
     [filter:hashtags]
     split_template = data/hashtags/%Y-%m-%d.gz
     track =
             # this line is ignored
-            # in the next line %(hash)s is substituted with #.
+            # in the next line %(hash)s is substituted with #
+            # see the top of the file for the hash definition.
             %(hash)slisten
             %(hash)smusic
             %(hash)slol
+    follow =
+    locations =
+    language =
 
+    [filter:debug]
+    # Print all English and Russian tweets to the console.
+    split_template = --
+    track =
+    follow =
+    locations =
+    language =
+               en
+               ru
 
-The predicates in the filter are ORed, meaning that a tweet to be
-filtered has to satisfy at least one predicate.
+.. note::
 
-The directories defined in the ``split_template`` have to exist.
+    The main predicates (``track``, ``follow``, ``locations``) in the filter are
+    ORed, meaning that a tweet to be filtered has to satisfy at least one
+    predicate. ``language`` is ANDed afterwards.
+
+.. note::
+
+    The directories defined in the ``split_template`` have to exist.
 
 To filter the collection run:
 

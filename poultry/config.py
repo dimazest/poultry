@@ -51,8 +51,8 @@ class Config(object):
         return (self.filter(s) for s in self._filter_sections)
 
     def filter(self, filter_name):
-        # Gather follow and track predicates
-        predicates = {p: self.get_elements(filter_name, p) for p in 'follow track'.split()}
+        # Gather follow, track and language predicates
+        predicates = {p: self.get_elements(filter_name, p) for p in 'follow track language'.split()}
         # Add locations
         predicates['locations'] = tuple(
             Coordinates.from_string(l) for l in self.get_elements(filter_name, 'locations')
@@ -100,14 +100,16 @@ class Filter(object):
       * https://dev.twitter.com/docs/streaming-api/methods#follow
       * https://dev.twitter.com/docs/streaming-api/methods#track
       * https://dev.twitter.com/docs/streaming-api/methods#locations
+      * https://dev.twitter.com/streaming/overview/request-parameters#language
 
     """
-    def __init__(self, follow=None, track=None, locations=None,
+    def __init__(self, follow=None, track=None, locations=None, language=None,
                  split_template=None, start_date=None, end_date=None,
                  name=None):
         self.follow = set(follow) if follow is not None else set()
         self.track = set(track) if track is not None else set()
         self.locations = set(locations) if locations is not None else set()
+        self.language = set(language) if language is not None else set()
 
         self.split_template = split_template
         # XXX that's kind of a hack
@@ -117,7 +119,7 @@ class Filter(object):
         self.end_date = Tweet._created_at_to_datetime(end_date) if end_date is not None else None
 
     def __or__(self, other):
-        filtering_predicates = 'follow', 'track', 'locations'
+        filtering_predicates = 'follow', 'track', 'locations', 'language'
 
         predicates = {p: self.predicates[p] for p in filtering_predicates}
         for p in filtering_predicates:
@@ -132,6 +134,7 @@ class Filter(object):
                 'locations': self.locations,
                 'start_date': self.start_date,
                 'end_date': self.end_date,
+                'language': self.language,
                 }
 
 

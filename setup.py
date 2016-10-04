@@ -28,7 +28,7 @@ class PyTest(TestCommand):
 
 setup(
     name='poultry',
-    version='1.4.0',
+    version='1.5.0a1',
     description='A tweet collection manager.',
     long_description=long_description,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers

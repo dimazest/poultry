@@ -44,7 +44,7 @@ class StreamProducer(Thread):
     """
 
     def __init__(self, target, twitter_credentials,
-                 follow=None, track=None, locations=None,
+                 follow=None, track=None, locations=None, language=None,
                  url='https://stream.twitter.com/1.1/statuses/filter.json',
                  *args, **kwargs):
         super(StreamProducer, self).__init__(*args, **kwargs)
@@ -54,6 +54,8 @@ class StreamProducer(Thread):
         self.track = track if track is not None else []
         self.follow = follow if follow is not None else []
         self.locations = locations if locations is not None else []
+        self.language = language if language is not None else []
+
         self.url = url
 
         self.client = OAuth1Session(
@@ -73,7 +75,7 @@ class StreamProducer(Thread):
             return ','.join(items)
 
         data = {
-            p: _quote(getattr(self, p)) for p in 'track follow'.split() if getattr(self, p)
+            p: _quote(getattr(self, p)) for p in 'track follow language'.split() if getattr(self, p)
         }
 
         locations = ','.join(str(f) for f in chain.from_iterable(chain.from_iterable(self.locations)))
@@ -146,6 +148,7 @@ def from_twitter_api(target, endpoint, config):
             'follow': filter_predicates['follow'],
             'track': filter_predicates['track'],
             'locations': filter_predicates['locations'],
+            'language': filter_predicates['language'],
         }
     else:
         kwargs = {}
