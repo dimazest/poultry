@@ -21,6 +21,10 @@ def consume_stream(target, input_dir=None):
         with consumers.closing(*targets):
 
             for line in lines:
+
+                if not line.strip():
+                    break
+
                 if isinstance(line, bytes):
                     line = line.decode('utf-8')
 
