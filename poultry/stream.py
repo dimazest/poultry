@@ -25,6 +25,15 @@ from poultry import consumers
 logger = logging.getLogger(__name__)
 
 
+def create_client(twitter_credentials):
+        return OAuth1Session(
+            twitter_credentials['consumer_key'],
+            client_secret=twitter_credentials['consumer_secret'],
+            resource_owner_key=twitter_credentials['access_token'],
+            resource_owner_secret=twitter_credentials['access_token_secret'],
+        )
+
+
 class StreamProducer(Thread):
     """A producer of a tweet stream retrieved from twitter.
 
@@ -57,13 +66,7 @@ class StreamProducer(Thread):
         self.language = language if language is not None else []
 
         self.url = url
-
-        self.client = OAuth1Session(
-            twitter_credentials['consumer_key'],
-            client_secret=twitter_credentials['consumer_secret'],
-            resource_owner_key=twitter_credentials['access_token'],
-            resource_owner_secret=twitter_credentials['access_token_secret'],
-        )
+        self.client = create_client(twitter_credentials)
 
     def _run(self):
         target = self.target
