@@ -23,7 +23,7 @@ def consume_stream(target, input_dir=None):
             for line in lines:
 
                 if not line.strip():
-                    break
+                    continue
 
                 if isinstance(line, bytes):
                     line = line.decode('utf-8')
