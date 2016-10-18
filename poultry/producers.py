@@ -3,7 +3,7 @@ import contextlib
 
 from poultry import consumers
 from poultry.stream import from_twitter_api
-from poultry.tweet import Tweet
+from poultry.tweet import Tweet, TweetValueError
 from poultry.utils import get_file_names
 
 
@@ -45,7 +45,10 @@ def readline_dir(input_dir):
 
     """
     for l in consume_stream(target=None, input_dir=input_dir):
-        yield Tweet(l)
+        try:
+            yield Tweet(l)
+        except TweetValueError:
+            pass
 
 
 def from_stream(target, source=None, config=None):
