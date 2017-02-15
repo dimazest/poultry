@@ -4,6 +4,8 @@ import gzip
 import logging
 import sys
 import time
+import json
+
 try:
     from Queue import Full
 except ImportError:
@@ -387,3 +389,22 @@ class SendNext(object):
     Returned a consumer if the sent value is ignored, and the next value
     should be sent immediately.
     """
+
+
+@consumer
+def extract_retweets(target):
+    """Extract retweets.
+
+    Note that it doesn't keep track of duplicates and the order.
+
+    """
+
+    while True:
+        raw_tweet = yield
+        tweet = Tweet(raw_tweet)
+
+        retweeted_status = tweet.parsed.get('retweeted_status', None)
+        if retweeted_status:
+            target.send(retweeted_status)
+
+        target.send(raw_tweet)

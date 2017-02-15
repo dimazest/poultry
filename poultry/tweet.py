@@ -15,16 +15,21 @@ TWEET_CREATED_AT_CHANGE_WARNING = False
 
 class Tweet(object):
     def __init__(self, raw_json):
-        try:
-            tweet = json.loads(raw_json)
-        except ValueError:
-            raise TweetValueError("The passed json can't be parsed.")
+
+        if isinstance(raw_json, dict):
+            self.parsed = raw_json
+            self.raw = None
         else:
-            if isinstance(tweet, dict) and 'text' in tweet:
-                self.raw = raw_json
-                self.parsed = tweet
+            try:
+                tweet = json.loads(raw_json)
+            except ValueError:
+                raise TweetValueError("The passed json can't be parsed.")
             else:
-                raise TweetValueError("There is no 'text' field in the passed json.")
+                if isinstance(tweet, dict) and 'text' in tweet:
+                    self.raw = raw_json
+                    self.parsed = tweet
+                else:
+                    raise TweetValueError("There is no 'text' field in the passed json.")
 
     @property
     def text(self):

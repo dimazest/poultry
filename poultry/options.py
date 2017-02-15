@@ -20,6 +20,7 @@ class Dispatcher(opster.Dispatcher):
                 ('s', 'source', '', 'The tweet source.'),
                 ('o', 'output',  '-', 'Output file, by default standartd output is used.'),
                 ('e', 'encoding', 'utf-8', 'Output file encoding.'),
+                ('', 'extract_retweets', False, 'Extract retweets'),
             )
         )
 
@@ -44,7 +45,8 @@ def _middleware(func):
             kwargs.pop('config')
 
         source = kwargs.pop('source')
-        producer = lambda target: from_stream(target, source, config)
+        extract_retweets = kwargs.pop('extract_retweets')
+        producer = lambda target: from_stream(target, source, config, extract_retweets=extract_retweets)
 
         if 'producer' in f_args:
             kwargs['producer'] = producer

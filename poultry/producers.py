@@ -36,7 +36,7 @@ def consume_stream(target, input_dir=None):
                     yield line
 
 
-def readline_dir(input_dir):
+def readline_dir(input_dir, extract_retweets=False, mark_extracted=False):
     """Read a tweet collection directory.
 
     :param str input_dir: the patht to the directory
@@ -46,19 +46,31 @@ def readline_dir(input_dir):
     """
     for l in consume_stream(target=None, input_dir=input_dir):
         try:
-            yield Tweet(l)
+            tweet = Tweet(l)
         except TweetValueError:
             pass
+        else:
+
+            # TODO: this duplicates consumers.extract_retweets.
+            retweeted_status = tweet.parsed.get('retweeted_status', None)
+            if extract_retweets and retweeted_status:
+                    yield Tweet(retweeted_status)
+
+            yield tweet
 
 
-def from_stream(target, source=None, config=None):
+def from_stream(target, source=None, config=None, extract_retweets=False):
     """Send lines from the standard input, the input directory or the Twitter Streaming API.
 
     :param target: a generator to which the read lines are sent.
     :param source: the path to a directory with tweet files.
     :param config: the config file
+    :param extract_retweets: Extract retweets from the tweets.
 
     """
+    if extract_retweets:
+        target = consumers.extract_retweets(target)
+
     if source in ('twitter://sample', 'twitter://filter'):
         consumer = from_twitter_api(target, source, config)
     else:
