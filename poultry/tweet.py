@@ -25,7 +25,7 @@ class Tweet(object):
             except ValueError:
                 raise TweetValueError("The passed json can't be parsed.")
             else:
-                if isinstance(tweet, dict) and 'text' in tweet:
+                if isinstance(tweet, dict) and ('text' in tweet or 'full_text' in tweet):
                     self.raw = raw_json
                     self.parsed = tweet
                 else:
@@ -34,7 +34,7 @@ class Tweet(object):
     @property
     def text(self):
         """The unprocessed text of the tweet."""
-        return self.parsed['text']
+        return self.parsed['full_text'] if 'full_text' in self.parsed else self.parsed['text']
 
     @property
     def hashtags(self):

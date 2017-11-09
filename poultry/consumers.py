@@ -210,7 +210,7 @@ def to_simple_queue(queue):
     while True:
         item = yield
         size = queue.qsize()
-        if size:
+        if size > 10:
             logger.warn('Queue size is %s.', size)
         try:
             queue.put(item, timeout=1)

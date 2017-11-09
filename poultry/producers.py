@@ -21,7 +21,6 @@ def consume_stream(target, input_dir=None):
         with consumers.closing(*targets):
 
             for line in lines:
-
                 if not line.strip():
                     continue
 
@@ -55,7 +54,6 @@ def readline_dir(input_dir, extract_retweets=False, mark_extracted=False):
             retweeted_status = tweet.parsed.get('retweeted_status', None)
             if extract_retweets and retweeted_status:
                     yield Tweet(retweeted_status)
-
             yield tweet
 
 
