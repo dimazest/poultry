@@ -46,7 +46,10 @@ def nop(*args, **kwargs):
 def show(output=sys.stdout, template=u'{t}\n'):
     """Print tweet text and meta information."""
     while True:
-        print(template.format(t=(yield)), file=output)
+        try:
+            print(template.format(t=(yield)), file=output)
+        except KeyError:
+            pass
 
 
 @consumer
