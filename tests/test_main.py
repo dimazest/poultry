@@ -44,7 +44,7 @@ def test_show(capfd, poultry_cfg):
     )
 
     out, err = capfd.readouterr()
-    assert not err
+    assert err.endswith('poultry.stream - WARNING - The POST request is sent.\n')
 
     assert out == (
         u'dimazest: pinkpop pukkelpop paaspop prilpop pedropicopop all use #pp12 :)\n'
@@ -68,9 +68,9 @@ def test_select(capfd, tweets, poultry_cfg):
     )
 
     out, err = capfd.readouterr()
-    assert not err
+    assert err.endswith('poultry.stream - WARNING - The POST request is sent.\n')
 
-    expected_result = u'\n'.join(tweets) + '\n'
+    expected_result = u'\n'.join(tweets) + u'\n\n'
     assert out == expected_result
 
 
@@ -81,7 +81,7 @@ def test_pprint(capfd, tweets, poultry_cfg):
     )
 
     out, err = capfd.readouterr()
-    assert not err
+    assert err.endswith('poultry.stream - WARNING - The POST request is sent.\n')
 
     expected_result = u'\n'.join(pformat(json.loads(t)) for t in tweets) + '\n'
     assert out == expected_result
@@ -94,7 +94,7 @@ def test_timeline(capfd, tweets, poultry_cfg):
     )
 
     out, err = capfd.readouterr()
-    assert not err
+    assert err.endswith('poultry.stream - WARNING - The POST request is sent.\n')
 
     assert out == (
         u'2012-04-13-13 1\n'

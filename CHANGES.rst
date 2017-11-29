@@ -4,6 +4,8 @@ Changes
 1.5.0 (in development)
 ----------------------
 
+* Use the ``ful_text`` field to retrieve tweet's text, fall back to ``text`` if
+  it's not available.
 * ``language`` filtering predicate.
 * The ``--mode`` parameter for the ``filter`` subcommand that sets the file opening
   mode. Use `w` to rewrite the files and `a` (the default) to append.
