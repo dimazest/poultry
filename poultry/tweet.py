@@ -149,9 +149,9 @@ class Tweet(object):
             pass
         else:
             if coor and coor['type'] == 'Point':
-                c = Coordinates(*coor['coordiinates'])
+                c = Coordinates(*coor['coordinates'])
                 return [
-                    [[c]] * 4
+                    [c] * 4
                 ]
 
         try:
@@ -160,9 +160,10 @@ class Tweet(object):
             pass
         else:
             if place and place['bounding_box']:
-                return [
-                    [Coordinates(*p) for p in place['bounding_box']['coordinates']]
+                result = [
+                    [Coordinates(*p) for p in place['bounding_box']['coordinates'][0]]
                 ]
+                return result
 
     @property
     def coordinates(self):
