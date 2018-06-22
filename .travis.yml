@@ -1,8 +1,6 @@
 language: python
 python:
-  - "2.7"
-  - "3.3"
-  - "3.4"
+  - "3.6"
 install:
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
   - pip install -U requests

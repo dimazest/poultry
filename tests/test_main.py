@@ -37,13 +37,13 @@ def mock_StreamProducer(monkeypatch):
     monkeypatch.setattr(StreamProducer, 'run', mocked)
 
 
-def test_show(capfd, poultry_cfg):
+def test_show(capsys, poultry_cfg):
     dispatcher.dispatch(
         args='show -s twitter://sample -v -c {}'.format(poultry_cfg).split(),
         scriptname='poultry',
     )
 
-    out, err = capfd.readouterr()
+    out, err = capsys.readouterr()
     assert err.endswith('poultry.stream - WARNING - The POST request is sent.\n')
 
     assert out == (
@@ -61,16 +61,16 @@ def test_show(capfd, poultry_cfg):
     )
 
 
-def test_select(capfd, tweets, poultry_cfg):
+def test_select(capsys, tweets, poultry_cfg):
     dispatcher.dispatch(
         args='select -s twitter://sample -v -c {}'.format(poultry_cfg).split(),
         scriptname='poultry',
     )
 
-    out, err = capfd.readouterr()
+    out, err = capsys.readouterr()
     assert err.endswith('poultry.stream - WARNING - The POST request is sent.\n')
 
-    expected_result = u'\n'.join(tweets) + u'\n\n'
+    expected_result = u'\n\n'.join(tweets) + u'\n\n'
     assert out == expected_result
 
 

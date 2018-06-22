@@ -23,7 +23,6 @@ __pycache__
 htmlcov
 
 docs/_build
-tweets
 
 # Installer logs
 pip-log.txt
@@ -32,6 +31,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+.pytest_cache/
 
 # Translations
 *.mo

@@ -2,7 +2,6 @@ import os
 import sys
 
 from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
 
 dirname = os.path.dirname(__file__)
 
@@ -11,19 +10,6 @@ with open(os.path.join(dirname, 'README.rst')) as f:
     long_description = f.read()
 with open(os.path.join(dirname, 'CHANGES.rst')) as f:
     long_description += '\n' + f.read()
-
-
-class PyTest(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = 'tests'
-        self.test_suite = True
-
-    def run_tests(self):
-        # import here, cause outside the eggs aren't loaded
-        import pytest
-        errno = pytest.main(self.test_args)
-        sys.exit(errno)
 
 
 setup(
@@ -63,7 +49,6 @@ setup(
             'poultry = poultry.main:dispatch',
         ],
     },
-    cmdclass={'test': PyTest},
     tests_require=[
         'pytest>=2.4.2',
     ],

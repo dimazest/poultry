@@ -43,8 +43,10 @@ def nop(*args, **kwargs):
 
 
 @consumer
-def show(output=sys.stdout, template=u'{t}\n'):
+def show(output=None, template=u'{t}\n'):
     """Print tweet text and meta information."""
+    if output is None:
+        output=sys.stdout
     while True:
         print(template.format(t=(yield)), file=output)
 
@@ -68,15 +70,19 @@ def pprint():
 
 
 @consumer
-def print_text(output=sys.stdout):
+def print_text(output=None):
     """Print only tweet's text."""
+    if output is None:
+        output = sys.stdout
     while True:
         tweet = yield
         print(tweet.text.replace(u'\n', u' '), file=output)
 
 
 @consumer
-def counter_printer(output=sys.stdout):
+def counter_printer(output=None):
+    if output is None:
+        output = sys.stdout
     while True:
         counter = yield
 

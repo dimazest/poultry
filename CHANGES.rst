@@ -4,7 +4,7 @@ Changes
 1.5.0 (in development)
 ----------------------
 
-* Use the ``ful_text`` field to retrieve tweet's text, fall back to ``text`` if
+* Use the ``full_text`` field to retrieve tweet's text, fall back to ``text`` if
   it's not available.
 * ``language`` filtering predicate.
 * The ``--mode`` parameter for the ``filter`` subcommand that sets the file opening
@@ -12,6 +12,7 @@ Changes
 * The ``-u`` (force UTF-8 output) option is removed. ``--output`` and
   ``--encoding`` are added instead.
 * The South-West point of tweet's place is used if its coordinate is not provided.
+* The ``Tweet.bounding_box`` property is introduced, it is always a polygon.
 * The ``--filters`` option for ``filter`` to define what filters are used.
 * Refactored communication with Twitter and internal stream handling.
 

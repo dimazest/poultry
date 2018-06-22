@@ -11,16 +11,8 @@ def test_readline_dir(tweet_collection_dir):
     """
     tweets = list(readline_dir(tweet_collection_dir))
 
-    t1, t2 = tweets
+    t1, t2, t3 = tweets
 
-    assert t2.id == 535432030939791360
-
-    assert t1.text == (
-        "i've just came across pydata's Blaze "
-        "http://t.co/iMMQAqZzid and it looks very promising"
-    )
-
-    assert t1.urls == set(['http://t.co/iMMQAqZzid'])
-
-    assert t1.user_id == 10868922
-    assert t2.user_id == 10868922
+    assert t1.id == 190800262909276162
+    assert t2.id == 195415832510201856
+    assert t3.id == 201239221502099456

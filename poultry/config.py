@@ -1,4 +1,5 @@
 import os
+import codecs
 try:
     from ConfigParser import SafeConfigParser, NoOptionError, NoSectionError
 except ImportError:
@@ -15,7 +16,7 @@ class Config(object):
 
     def __init__(self, config_file):
         config = SafeConfigParser()
-        config.read(config_file)
+        config.read_file(codecs.open(config_file, 'r', 'utf-8'))
         self.config = config
 
     def sections(self):

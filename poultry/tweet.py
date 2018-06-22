@@ -137,8 +137,8 @@ class Tweet(object):
         return self.parsed['lang']
 
     @property
-    def coordinates(self):
-        """The location of the tweet.
+    def bounding_box(self):
+        """The bounding box of the tweet.
 
         `None` is returned in case there is no geo information.
 
@@ -149,7 +149,10 @@ class Tweet(object):
             pass
         else:
             if coor and coor['type'] == 'Point':
-                return Coordinates(*coor['coordinates'])
+                c = Coordinates(*coor['coordiinates'])
+                return [
+                    [[c]] * 4
+                ]
 
         try:
             place = self.parsed['place']
@@ -157,9 +160,14 @@ class Tweet(object):
             pass
         else:
             if place and place['bounding_box']:
-                return Coordinates(
-                    *place['bounding_box']['coordinates'][0][0]
-                )
+                return [
+                    [Coordinates(*p) for p in place['bounding_box']['coordinates']]
+                ]
+
+    @property
+    def coordinates(self):
+        """The coordinates of the tweet."""
+        return (self.bounding_box or [[None]])[0][0]
 
     @property
     def twitter_url(self):
@@ -174,7 +182,7 @@ class Tweet(object):
         The text of the tweet without entities (hashtags, ursl and
         user mentions).
         '''
-        entities = self.parsed['entities'].values()
+        entities = self.parsed.get('entities', {}).values()
         indicies = list(chain.from_iterable((e['indices'] for e in es) for es in entities))
 
         text = list(self.text)
