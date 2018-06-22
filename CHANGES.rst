@@ -4,6 +4,7 @@ Changes
 1.5.0 (in development)
 ----------------------
 
+* Python 2 is not supported anymore.
 * Use the ``full_text`` field to retrieve tweet's text, fall back to ``text`` if
   it's not available.
 * ``language`` filtering predicate.
