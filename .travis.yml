@@ -4,10 +4,10 @@ python:
 install:
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
   - pip install -U requests
+  - pip install -r requirements-testing.txt -e .
 
-script: python setup.py test
+script: tox
 
 after_success:
-  - pip install -r requirements-testing.txt -e .
   - py.test --cov=poultry --cov-report=term-missing tests
   - coveralls
