@@ -3,7 +3,7 @@ python:
   - "3.6"
 install:
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
-  - pip install -U requests
+  - pip install -U requests tox pytest
   - pip install -r requirements-testing.txt -e .
 
 script: tox
