@@ -224,11 +224,15 @@ class Tweet(object):
         tokens = self.text_without_entities.split()
         tokens = (t.lower() for t in tokens)
 
-        return filter(lambda s: len(s) >= min_token_len,
-                      [u''.join(c for c in t if unicodedata.category(c)[0] in allowed_categories)
-                       for t in tokens
-                       ]
-                      )
+        return list(
+            filter(
+                lambda s: len(s) >= min_token_len,
+                [
+                    u''.join(c for c in t if unicodedata.category(c)[0] in allowed_categories)
+                    for t in tokens
+                ]
+            )
+        )
 
     @property
     def is_spam(self):
@@ -237,7 +241,7 @@ class Tweet(object):
 
         .. todo: parameters instead of magic numbers.
         '''
-        entity_violations = (2 < e for e in [self.hashtags, self.urls, self.user_mentions])
+        entity_violations = (len(e) > 2 for e in [self.hashtags, self.urls, self.user_mentions])
         lenght_violantion = len(self.tokens) < 5
 
         return any(entity_violations) or lenght_violantion

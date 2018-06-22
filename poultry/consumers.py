@@ -48,7 +48,10 @@ def show(output=None, template=u'{t}\n'):
     if output is None:
         output=sys.stdout
     while True:
-        print(template.format(t=(yield)), file=output)
+        try:
+            print(template.format(t=(yield)), file=output)
+        except KeyError:
+            pass
 
 
 @consumer

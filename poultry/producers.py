@@ -47,7 +47,7 @@ def readline_dir(input_dir, extract_retweets=False, mark_extracted=False):
         try:
             tweet = Tweet(l)
         except TweetValueError:
-            pass
+            continue
         else:
 
             # TODO: this duplicates consumers.extract_retweets.
