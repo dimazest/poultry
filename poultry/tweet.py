@@ -362,3 +362,23 @@ class Coordinates(namedtuple('Coordiantes', 'lon lat')):
             return x[:2], x[2:]
 
         return two_pairs(float(i.strip()) for i in s.split(','))
+
+
+def intersect(p1, p2):
+    def box(p):
+        sw = Coordinates(min(c.lon for c in p), min(c.lat for c in p))
+        ne = Coordinates(max(c.lon for c in p), max(c.lat for c in p))
+
+        return sw, ne
+
+    a_sw, a_ne = box(p1)
+    b_sw, b_ne = box(p2)
+
+    checks = [
+        (a_sw.lat > b_ne.lat),
+        (a_sw.lon > b_ne.lon),
+        (a_ne.lat < b_sw.lat),
+        (a_ne.lon < b_sw.lon),
+    ]
+
+    return not any(checks)
