@@ -2,7 +2,6 @@ import os
 import sys
 
 from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
 
 dirname = os.path.dirname(__file__)
 
@@ -13,22 +12,9 @@ with open(os.path.join(dirname, 'CHANGES.rst')) as f:
     long_description += '\n' + f.read()
 
 
-class PyTest(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = 'tests'
-        self.test_suite = True
-
-    def run_tests(self):
-        # import here, cause outside the eggs aren't loaded
-        import pytest
-        errno = pytest.main(self.test_args)
-        sys.exit(errno)
-
-
 setup(
     name='poultry',
-    version='1.5.0',
+    version='1.5.1',
     description='A tweet collection manager.',
     long_description=long_description,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -41,7 +27,6 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Operating System :: MacOS :: MacOS X',
         'Topic :: Utilities',
-        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
     ],
     keywords='',
@@ -63,7 +48,6 @@ setup(
             'poultry = poultry.main:dispatch',
         ],
     },
-    cmdclass={'test': PyTest},
     tests_require=[
         'pytest>=2.4.2',
     ],
