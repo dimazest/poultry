@@ -104,3 +104,13 @@ def timeline(producer, window=('w', '%Y-%m-%d-%H', '')):
             ),
         ),
     )
+
+
+@command()
+def media(producer, output):
+    """Retrieve media urls."""
+    producer(
+        consumers.to_tweet(
+            consumers.print_media(output=output)
+        )
+    )

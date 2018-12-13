@@ -4,7 +4,7 @@ import gzip
 import logging
 import sys
 import time
-import json
+import csv
 
 try:
     from Queue import Full
@@ -417,3 +417,28 @@ def extract_retweets(target):
             target.send(retweeted_status)
 
         target.send(raw_tweet)
+
+
+@consumer
+def print_media(output=None):
+    """Print media items."""
+    if output is None:
+        output = sys.stdout
+
+    field_names = 'tweet_id', 'index', 'media_id', 'type', 'media_url'
+    writer = csv.DictWriter(output, fieldnames=field_names)
+
+    while True:
+        tweet = yield
+        media = tweet.parsed.get('extended_entities', {}).get('media', [])
+
+        for i, m in enumerate(media):
+            writer.writerow(
+                {
+                    'tweet_id': tweet.id,
+                    'index': i,
+                    'media_id': m['id'],
+                    'type': m['type'],
+                    'media_url': m['media_url'],
+                }
+            )

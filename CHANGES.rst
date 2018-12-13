@@ -1,8 +1,8 @@
 Changes
 =======
 
-1.5.0 (in development)
-----------------------
+1.5.0
+-----
 
 * Python 2 is not supported anymore.
 * Use the ``full_text`` field to retrieve tweet's text, fall back to ``text`` if
@@ -16,6 +16,7 @@ Changes
 * The ``Tweet.bounding_box`` property is introduced, it is always a polygon.
 * The ``--filters`` option for ``filter`` to define what filters are used.
 * Refactored communication with Twitter and internal stream handling.
+* New ``media`` command.
 
 1.3.0
 -----
