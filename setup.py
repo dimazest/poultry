@@ -14,7 +14,7 @@ with open(os.path.join(dirname, 'CHANGES.rst')) as f:
 
 setup(
     name='poultry',
-    version='1.5.1',
+    version='1.5.2',
     description='A tweet collection manager.',
     long_description=long_description,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
