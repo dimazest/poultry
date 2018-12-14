@@ -1,6 +1,11 @@
 Changes
 =======
 
+1.5.1
+-----
+
+* The ``media`` command outputs the CSV header and the ``source_status_id`` field.
+
 1.5.0
 -----
 

@@ -425,8 +425,9 @@ def print_media(output=None):
     if output is None:
         output = sys.stdout
 
-    field_names = 'tweet_id', 'index', 'media_id', 'type', 'media_url'
+    field_names = 'tweet_id', 'index', 'media_id', 'type', 'media_url', 'source_status_id'
     writer = csv.DictWriter(output, fieldnames=field_names)
+    writer.writeheader()
 
     while True:
         tweet = yield
@@ -440,5 +441,6 @@ def print_media(output=None):
                     'media_id': m['id'],
                     'type': m['type'],
                     'media_url': m['media_url'],
+                    'source_status_id': m.get('source_status_id'),
                 }
             )
